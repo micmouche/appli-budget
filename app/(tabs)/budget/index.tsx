@@ -96,6 +96,11 @@ export default function BudgetScreen(): React.JSX.Element {
         headerRight={
           <View style={{ flexDirection: 'row' }}>
             <IconButton
+              name="FileUp"
+              accessibilityLabel={t('budget.import.title')}
+              onPress={() => router.push('/(tabs)/budget/import')}
+            />
+            <IconButton
               name="ChartColumn"
               accessibilityLabel={t('budget.history')}
               onPress={() => router.push('/(tabs)/budget/historique')}

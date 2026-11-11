@@ -17,6 +17,7 @@ export interface ExpenseInput {
   paidById: string | null;
   shared: boolean;
   note?: string | null;
+  importKey?: string | null;
 }
 
 export function createExpense(input: ExpenseInput, db: Db = getDb()): Expense {
@@ -29,6 +30,7 @@ export function createExpense(input: ExpenseInput, db: Db = getDb()): Expense {
     shared: input.shared,
     note: input.note?.trim() || null,
     recurringId: null,
+    importKey: input.importKey ?? null,
     createdAt: new Date().toISOString(),
   };
   db.insert(expenses).values(row).run();
@@ -216,6 +218,7 @@ export function generateDueRecurring(today = new Date(), db: Db = getDb()): numb
             shared: r.shared,
             note: r.note,
             recurringId: r.id,
+            importKey: null,
             createdAt: new Date().toISOString(),
           })
           .run();

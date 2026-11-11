@@ -6,3 +6,4 @@ export * from './savings';
 export * from './property';
 export * from './rental';
 export * from './works';
+export * from './importRules';

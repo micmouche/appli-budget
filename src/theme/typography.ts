@@ -13,7 +13,14 @@ export const fontFamilies = {
 } as const;
 
 export type TypeStyle =
-  'display' | 'title1' | 'title2' | 'headline' | 'body' | 'callout' | 'caption' | 'micro';
+  | 'display'
+  | 'title1'
+  | 'title2'
+  | 'headline'
+  | 'body'
+  | 'callout'
+  | 'caption'
+  | 'micro';
 
 export const typeScale: Record<TypeStyle, TextStyle> = {
   display: { fontFamily: fontFamilies.display, fontSize: 40, lineHeight: 44, letterSpacing: -0.8 },

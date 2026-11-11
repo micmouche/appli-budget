@@ -42,7 +42,9 @@ export default function QuoteScreen(): React.JSX.Element {
   const [amount, setAmount] = useState<number | null>(existing?.amountExclVatCents ?? null);
   const [vat, setVat] = useState<'200' | '100' | '55'>(
     String(existing?.vatRateX10 ?? lots.find((l) => l.id === lotId)?.vatRateX10 ?? 100) as
-      '200' | '100' | '55',
+      | '200'
+      | '100'
+      | '55',
   );
   const [status, setStatus] = useState<QuoteStatus>(existing?.status ?? 'received');
   const [date, setDate] = useState(existing?.date ?? toIsoDate(new Date()));

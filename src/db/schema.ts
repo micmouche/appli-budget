@@ -48,6 +48,8 @@ export const expenses = sqliteTable('expenses', {
   note: text('note'),
   /** Dépense générée par une récurrence. */
   recurringId: text('recurring_id'),
+  /** Empreinte de l'opération bancaire importée (anti-doublon). */
+  importKey: text('import_key'),
   createdAt: text('created_at').notNull(),
 });
 
@@ -336,3 +338,11 @@ export type WorkPayment = typeof workPayments.$inferSelect;
 export type LotKind = (typeof LOT_KINDS)[number];
 export type QuoteStatus = (typeof QUOTE_STATUSES)[number];
 export type WorkPaymentKind = (typeof WORK_PAYMENT_KINDS)[number];
+
+/** Règles de catégorisation apprises lors des imports (libellé normalisé → catégorie). */
+export const importRules = sqliteTable('import_rules', {
+  pattern: text('pattern').primaryKey(),
+  categoryId: text('category_id').notNull(),
+  updatedAt: text('updated_at').notNull(),
+});
+export type ImportRule = typeof importRules.$inferSelect;

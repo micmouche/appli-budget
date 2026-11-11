@@ -252,6 +252,19 @@ export const migrations: Migration[] = [
       CREATE INDEX IF NOT EXISTS idx_work_payments_project ON work_payments(project_id, due_date);
     `,
   },
+  {
+    version: 6,
+    description: 'Import de relevés bancaires : empreinte anti-doublon et règles apprises',
+    sql: `
+      ALTER TABLE expenses ADD COLUMN import_key TEXT;
+      CREATE INDEX IF NOT EXISTS idx_expenses_import_key ON expenses(import_key);
+      CREATE TABLE IF NOT EXISTS import_rules (
+        pattern TEXT PRIMARY KEY NOT NULL,
+        category_id TEXT NOT NULL,
+        updated_at TEXT NOT NULL
+      );
+    `,
+  },
 ];
 
 export const LATEST_SCHEMA_VERSION = migrations[migrations.length - 1]?.version ?? 0;

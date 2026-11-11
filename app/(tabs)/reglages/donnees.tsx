@@ -1,5 +1,6 @@
 /** Données : export/import JSON, démo, effacement. */
 import React, { useState } from 'react';
+import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { Alert, Switch } from 'react-native';
 import { File } from 'expo-file-system';
@@ -22,6 +23,7 @@ import { shareText } from '@/utils/share';
 export default function DataScreen(): React.JSX.Element {
   const { t } = useTranslation();
   const theme = useTheme();
+  const router = useRouter();
   const demoMode = useSettings((s) => s.demoMode);
   const couple = useSettings((s) => s.couple);
   const set = useSettings((s) => s.set);
@@ -100,6 +102,13 @@ export default function DataScreen(): React.JSX.Element {
       <SubScreenHeader title={t('settings.data')} />
       <Card padded={false} style={{ paddingHorizontal: theme.spacing[4], marginBottom: theme.spacing[3] }}>
         <ListRow icon="FileDown" title={t('settings.exportJson')} chevron onPress={() => void exportJson()} />
+        <ListRow
+          icon="Landmark"
+          title={t('budget.import.title')}
+          subtitle={t('budget.import.hint')}
+          chevron
+          onPress={() => router.push('/(tabs)/budget/import')}
+        />
         <ListRow
           icon="FileUp"
           title={t('settings.importJson')}

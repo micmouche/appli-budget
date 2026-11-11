@@ -173,7 +173,28 @@
     "exportPdf": "Month summary PDF",
     "topCategory": "Top category",
     "dailyAverage": "Daily average",
-    "transactions": "{{count}} expense(s)"
+    "transactions": "{{count}} expense(s)",
+    "import": {
+      "title": "Import a statement",
+      "hint": "Download the statement from your bank's website (CSV or OFX), then pick the file here.",
+      "pick": "Choose a file",
+      "parsing": "Reading file…",
+      "invalid": "Unrecognised format. Expected CSV (; or , separated) or OFX.",
+      "none": "No transaction found in this file.",
+      "found": "{{count}} transaction(s) found",
+      "debits": "{{count}} expense(s)",
+      "credits": "{{count}} credit(s) ignored",
+      "duplicates": "{{count}} already imported",
+      "select": "Selection",
+      "all": "All",
+      "nothing": "None",
+      "importButton": "Import {{count}} expense(s)",
+      "done": "{{count}} expense(s) imported",
+      "alreadyImported": "Already imported",
+      "sharedDefault": "Shared expenses",
+      "payer": "Paid by",
+      "learned": "Category remembered for “{{label}}”"
+    }
   },
   "categories": {
     "housing": "Housing",

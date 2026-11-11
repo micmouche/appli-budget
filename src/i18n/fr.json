@@ -173,7 +173,28 @@
     "exportPdf": "Synthèse PDF du mois",
     "topCategory": "Première catégorie",
     "dailyAverage": "Moyenne par jour",
-    "transactions": "{{count}} dépense(s)"
+    "transactions": "{{count}} dépense(s)",
+    "import": {
+      "title": "Importer un relevé",
+      "hint": "Téléchargez le relevé depuis l'espace client de votre banque (format CSV ou OFX), puis choisissez le fichier ici.",
+      "pick": "Choisir un fichier",
+      "parsing": "Lecture du fichier…",
+      "invalid": "Format non reconnu. Attendu : CSV (séparateur ; ou ,) ou OFX.",
+      "none": "Aucune opération trouvée dans ce fichier.",
+      "found": "{{count}} opération(s) trouvée(s)",
+      "debits": "{{count}} dépense(s)",
+      "credits": "{{count}} crédit(s) ignoré(s)",
+      "duplicates": "{{count}} déjà importée(s)",
+      "select": "Sélection",
+      "all": "Tout",
+      "nothing": "Rien",
+      "importButton": "Importer {{count}} dépense(s)",
+      "done": "{{count}} dépense(s) importée(s)",
+      "alreadyImported": "Déjà importée",
+      "sharedDefault": "Dépenses communes",
+      "payer": "Payées par",
+      "learned": "Catégorie mémorisée pour « {{label}} »"
+    }
   },
   "categories": {
     "housing": "Logement",
