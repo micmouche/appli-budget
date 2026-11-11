@@ -5,7 +5,7 @@ const { withGradleProperties } = require('expo/config-plugins');
 module.exports = function withGradleMemory(config) {
   return withGradleProperties(config, (cfg) => {
     const props = cfg.modResults.filter((p) => !(p.type === 'property' && (p.key === 'org.gradle.jvmargs' || p.key === 'org.gradle.workers.max')));
-    props.push({ type: 'property', key: 'org.gradle.jvmargs', value: '-Xmx4096m -XX:MaxMetaspaceSize=1024m -XX:+HeapDumpOnOutOfMemoryError' });
+    props.push({ type: 'property', key: 'org.gradle.jvmargs', value: '-Xmx3072m -XX:MaxMetaspaceSize=768m' });
     props.push({ type: 'property', key: 'org.gradle.workers.max', value: '2' });
     cfg.modResults = props;
     return cfg;

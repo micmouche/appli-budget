@@ -1,0 +1,38 @@
+# Compile un APK Android de test sur les machines GitHub (gratuit), sans EAS.
+# Lancement : onglet Actions › « Android APK (test) » › Run workflow. Le fichier .apk est dans « Artifacts ».
+name: Android APK (test)
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+      - uses: android-actions/setup-android@v3
+      - name: Dépendances
+        run: npm ci
+      - name: Génération du projet Android
+        run: npx expo prebuild --platform android --no-install
+      - name: Compilation
+        working-directory: android
+        run: ./gradlew assembleRelease --no-daemon
+      - name: Renommage
+        run: cp android/app/build/outputs/apk/release/app-release.apk pecule-test.apk
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pecule-android-apk
+          path: pecule-test.apk
+          retention-days: 30

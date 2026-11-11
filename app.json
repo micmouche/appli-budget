@@ -137,7 +137,9 @@
             "minSdkVersion": 26,
             "buildArchs": [
               "arm64-v8a"
-            ]
+            ],
+            "enableProguardInReleaseBuilds": false,
+            "enableShrinkResourcesInReleaseBuilds": false
           }
         }
       ],
