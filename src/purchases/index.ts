@@ -108,10 +108,16 @@ export async function presentCustomerCenter(): Promise<void> {
   await PurchasesUI.presentCustomerCenter();
 }
 
-/** Premium effectif : entitlement store, ou forçage développeur (jamais en production). */
+/**
+ * Déverrouillage de test : défini à la compilation (EXPO_PUBLIC_TEST_UNLOCK=1) uniquement
+ * pour les builds de test internes. Jamais défini pour les builds destinés aux stores.
+ */
+export const TEST_UNLOCK = process.env.EXPO_PUBLIC_TEST_UNLOCK === '1';
+
+/** Premium effectif : entitlement store, déverrouillage de test, ou forçage développeur. */
 export function isPremiumNow(): boolean {
   const { entitled } = usePremiumStore.getState();
-  return entitled || (__DEV__ && getSettings().devPremium);
+  return entitled || TEST_UNLOCK || (__DEV__ && getSettings().devPremium);
 }
 
 export function usePremium(): { isPremium: boolean; available: boolean; loading: boolean } {
@@ -119,5 +125,5 @@ export function usePremium(): { isPremium: boolean; available: boolean; loading:
   const available = usePremiumStore((s) => s.available);
   const loading = usePremiumStore((s) => s.loading);
   const devPremium = useSettings((s) => s.devPremium);
-  return { isPremium: entitled || (__DEV__ && devPremium), available, loading };
+  return { isPremium: entitled || TEST_UNLOCK || (__DEV__ && devPremium), available, loading };
 }
