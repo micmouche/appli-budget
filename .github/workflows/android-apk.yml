@@ -21,7 +21,6 @@ jobs:
         with:
           distribution: temurin
           java-version: 17
-      - uses: android-actions/setup-android@v3
       - name: Dépendances
         run: npm ci
       - name: Génération du projet Android
