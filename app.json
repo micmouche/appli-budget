@@ -146,11 +146,11 @@
       "policy": "appVersion"
     },
     "updates": {
-      "url": "https://u.expo.dev/REPLACE_WITH_EAS_PROJECT_ID"
+      "url": "https://u.expo.dev/718a24ce-a93d-4a8d-971e-6d1561bf72f7"
     },
     "extra": {
       "eas": {
-        "projectId": "REPLACE_WITH_EAS_PROJECT_ID"
+        "projectId": "718a24ce-a93d-4a8d-971e-6d1561bf72f7"
       },
       "revenueCat": {
         "ios": "REPLACE_WITH_REVENUECAT_IOS_PUBLIC_KEY",
