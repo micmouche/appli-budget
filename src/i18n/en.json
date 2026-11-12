@@ -261,7 +261,20 @@
     },
     "remainingToSpend": "Left to spend",
     "daysLeft": "{{count}} days left",
-    "spentOf": "Spent {{spent}} of {{total}}"
+    "spentOf": "Spent {{spent}} of {{total}}",
+    "operations": {
+      "title": "Transactions",
+      "searchPlaceholder": "Search a note, a category…",
+      "noResults": "No matching transaction",
+      "count": "{{count}} transaction(s)",
+      "allAccounts": "All accounts",
+      "allKinds": "All",
+      "everyone": "Everyone",
+      "net": "Net balance",
+      "thisMonth": "This month",
+      "threeMonths": "3 months",
+      "allTime": "All time"
+    }
   },
   "categories": {
     "housing": "Housing",

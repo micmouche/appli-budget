@@ -261,7 +261,20 @@
     },
     "remainingToSpend": "Reste à dépenser",
     "daysLeft": "{{count}} jours restants",
-    "spentOf": "Dépensé {{spent}} sur {{total}}"
+    "spentOf": "Dépensé {{spent}} sur {{total}}",
+    "operations": {
+      "title": "Opérations",
+      "searchPlaceholder": "Rechercher une note, une catégorie…",
+      "noResults": "Aucune opération ne correspond",
+      "count": "{{count}} opération(s)",
+      "allAccounts": "Tous les comptes",
+      "allKinds": "Tout",
+      "everyone": "Tout le monde",
+      "net": "Solde net",
+      "thisMonth": "Ce mois",
+      "threeMonths": "3 mois",
+      "allTime": "Tout"
+    }
   },
   "categories": {
     "housing": "Logement",
