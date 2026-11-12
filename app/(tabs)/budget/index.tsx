@@ -172,7 +172,7 @@ export default function BudgetScreen(): React.JSX.Element {
               centerLabel={t('budget.spent')}
               centerValue={formatCents(month.totalCents, { compact: true })}
               otherLabel={t('budget.otherCategories')}
-              size={150}
+              size={170}
             />
           </Card>
         ) : null}

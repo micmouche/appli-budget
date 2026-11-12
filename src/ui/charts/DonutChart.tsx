@@ -9,7 +9,7 @@ import { Pie, PolarChart } from 'victory-native';
 
 import type { Cents } from '@/finance/money';
 import { useTheme } from '@/theme/ThemeProvider';
-import { formatCents } from '@/utils/format';
+import { formatCents, formatPct } from '@/utils/format';
 import { percentOf } from '@/finance/money';
 
 import { Text } from '../Text';
@@ -56,7 +56,7 @@ export function DonutChart({
     });
   }
   const summary =
-    accessibilitySummary ?? data.map((d) => `${d.label} ${percentOf(d.value, total)} %`).join(', ');
+    accessibilitySummary ?? data.map((d) => `${d.label} ${formatPct(percentOf(d.value, total))}`).join(', ');
 
   return (
     <View style={styles.wrap} accessible accessibilityLabel={summary}>
@@ -105,8 +105,8 @@ export function DonutChart({
             <Text variant="caption" tabular>
               {formatCents(d.value, { compact: true })}
             </Text>
-            <Text variant="caption" color="textMuted" tabular style={{ width: 44, textAlign: 'right' }}>
-              {percentOf(d.value, total)} %
+            <Text variant="caption" color="textMuted" tabular style={{ width: 56, textAlign: 'right' }}>
+              {formatPct(percentOf(d.value, total))}
             </Text>
           </View>
         ))}
@@ -116,7 +116,7 @@ export function DonutChart({
 }
 
 const styles = StyleSheet.create({
-  wrap: { flexDirection: 'row', alignItems: 'center', gap: 16 },
+  wrap: { alignItems: 'center', gap: 16 },
   center: {
     position: 'absolute',
     top: 0,
@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
   },
   empty: { borderWidth: 24 },
-  legend: { flex: 1, gap: 8 },
+  legend: { alignSelf: 'stretch', gap: 8 },
   legendRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   swatch: { width: 10, height: 10, borderRadius: 3 },
 });

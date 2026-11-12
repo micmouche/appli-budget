@@ -21,7 +21,7 @@ import { ListRow } from '@/ui/ListRow';
 import { PressableScale } from '@/ui/Pressable';
 import { ProgressBar } from '@/ui/Progress';
 import { Screen } from '@/ui/Screen';
-import { Segmented } from '@/ui/Segmented';
+import { TabChips } from '@/ui/TabChips';
 import { Text } from '@/ui/Text';
 import { showToast } from '@/ui/Toast';
 import { formatCents, formatDate, formatPct, toIsoDate } from '@/utils/format';
@@ -108,14 +108,7 @@ export default function ProjectScreen(): React.JSX.Element {
           {formatCents(totals.paidCents, { compact: true })}
         </Text>
       </Card>
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        style={{ marginHorizontal: -20 }}
-        contentContainerStyle={{ paddingHorizontal: 20 }}
-      >
-        <View style={{ minWidth: 520 }}>
-          <Segmented<Tab>
+      <TabChips<Tab>
             options={[
               { value: 'lots', label: t('works.tabLots') },
               { value: 'quotes', label: t('works.tabQuotes') },
@@ -126,8 +119,6 @@ export default function ProjectScreen(): React.JSX.Element {
             value={tab}
             onChange={setTab}
           />
-        </View>
-      </ScrollView>
       <View style={{ marginTop: theme.spacing[3] }}>
         {tab === 'lots' ? (
           <>

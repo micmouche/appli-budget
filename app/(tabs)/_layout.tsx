@@ -3,6 +3,7 @@ import React from 'react';
 import { Tabs } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { Platform } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useTheme } from '@/theme/ThemeProvider';
 import { fontFamilies } from '@/theme/typography';
@@ -11,6 +12,7 @@ import { Icon } from '@/ui/Icon';
 export default function TabsLayout(): React.JSX.Element {
   const theme = useTheme();
   const { t } = useTranslation();
+  const insets = useSafeAreaInsets();
   const tab = (name: string, title: string, icon: string, activeIcon = icon) => (
     <Tabs.Screen
       key={name}
@@ -34,13 +36,17 @@ export default function TabsLayout(): React.JSX.Element {
         headerShown: false,
         tabBarActiveTintColor: theme.colors.brand,
         tabBarInactiveTintColor: theme.colors.textMuted,
+        tabBarShowLabel: true,
         tabBarStyle: {
           backgroundColor: theme.colors.surface,
           borderTopColor: theme.colors.border,
-          height: Platform.OS === 'ios' ? 84 : 68,
+          height: 56 + Math.max(insets.bottom, Platform.OS === 'ios' ? 20 : 8),
           paddingTop: 6,
+          paddingBottom: Math.max(insets.bottom, Platform.OS === 'ios' ? 20 : 8),
         },
-        tabBarLabelStyle: { fontFamily: fontFamilies.bodyMedium, fontSize: 11 },
+        tabBarItemStyle: { paddingVertical: 2 },
+        tabBarLabelStyle: { fontFamily: fontFamilies.bodyMedium, fontSize: 11, marginTop: 2 },
+        tabBarAllowFontScaling: false,
         sceneStyle: { backgroundColor: theme.colors.bg },
       }}
     >

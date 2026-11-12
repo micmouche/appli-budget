@@ -22,6 +22,7 @@ import { IconButton } from '@/ui/IconButton';
 import { ListRow } from '@/ui/ListRow';
 import { Screen } from '@/ui/Screen';
 import { Segmented } from '@/ui/Segmented';
+import { TabChips } from '@/ui/TabChips';
 import { Text } from '@/ui/Text';
 import { formatCents, formatDate, formatMonthKey, formatPct } from '@/utils/format';
 
@@ -65,7 +66,7 @@ export default function PropertyScreen(): React.JSX.Element {
           {property.address}
         </Text>
       ) : null}
-      <Segmented<Tab>
+      <TabChips<Tab>
         options={[
           { value: 'rents', label: t('rental.tabRents') },
           { value: 'lease', label: t('rental.tabLease') },
