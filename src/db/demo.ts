@@ -27,8 +27,7 @@ import {
   workProjects,
   workLots,
   workQuotes,
-  workPayments,
-} from './schema';
+  workPayments, accounts } from './schema';
 import { newId } from '@/utils/id';
 
 /** Générateur pseudo-aléatoire déterministe (mulberry32). */
@@ -118,6 +117,12 @@ export function seedDemo(db: Db = getDemoDb()): void {
   const camille = upsertPerson({ name: 'Camille', monthlyIncomeCents: 2_100_00, position: 0, avatarId: 'avatar_female_01', colorIndex: 1 }, db);
   const hugo = upsertPerson({ name: 'Hugo', monthlyIncomeCents: 2_900_00, position: 1, avatarId: 'avatar_male_02', colorIndex: 6 }, db);
   const people = [camille.id, hugo.id];
+  const now0 = new Date().toISOString();
+  db.insert(accounts).values({ id: 'acc_demo_joint', name: 'Compte joint', type: 'joint', ownerId: null, initialBalanceCents: 1_850_00, colorIndex: 0, isDefault: true, position: 0, archived: false, updatedAt: now0, deletedAt: null, createdAt: now0 }).run();
+  db.insert(accounts).values({ id: 'acc_demo_camille', name: 'Compte Camille', type: 'checking', ownerId: camille.id, initialBalanceCents: 920_00, colorIndex: 1, isDefault: false, position: 1, archived: false, updatedAt: now0, deletedAt: null, createdAt: now0 }).run();
+  db.insert(accounts).values({ id: 'acc_demo_hugo', name: 'Compte Hugo', type: 'checking', ownerId: hugo.id, initialBalanceCents: 1_340_00, colorIndex: 6, isDefault: false, position: 2, archived: false, updatedAt: now0, deletedAt: null, createdAt: now0 }).run();
+  db.insert(accounts).values({ id: 'acc_demo_cash', name: 'Espèces', type: 'cash', ownerId: null, initialBalanceCents: 60_00, colorIndex: 3, isDefault: false, position: 3, archived: false, updatedAt: now0, deletedAt: null, createdAt: now0 }).run();
+  const accountFor = (personId: string, shared: boolean): string => (shared ? 'acc_demo_joint' : personId === camille.id ? 'acc_demo_camille' : 'acc_demo_hugo');
   const random = rng(20261110);
   const pick = <T>(arr: readonly T[]): T => arr[Math.floor(random() * arr.length)]!;
   const between = (min: number, max: number): number => Math.round(min + random() * (max - min));
@@ -147,16 +152,18 @@ export function seedDemo(db: Db = getDemoDb()): void {
         for (let i = 0; i < n; i += 1) {
           const day = between(1, lastDay);
           const amount = Math.round(between(p.amount[0], p.amount[1]) / 10) * 10;
+          const payer = pick(people);
           db.insert(expenses)
             .values({
               id: newId('e_'),
               amountCents: amount,
               categoryId: p.categoryId,
               date: toIsoDate(new Date(year, month, day)),
-              paidById: pick(people),
+              paidById: payer,
               shared: p.shared,
               note: p.notes ? pick(p.notes) : null,
               recurringId: null,
+              accountId: accountFor(payer, p.shared),
               createdAt: new Date(year, month, day, 12).toISOString(),
             })
             .run();
@@ -171,6 +178,13 @@ export function seedDemo(db: Db = getDemoDb()): void {
         { categoryId: 'cat_insurance', amount: 24_50, note: 'Assurance habitation', paidBy: camille.id },
         { categoryId: 'cat_housing', amount: 85_00, note: 'Électricité', paidBy: hugo.id },
       ];
+      if (m > 0 || today.getDate() >= 1) {
+        const salaries: [string, string, number][] = [[camille.id, 'acc_demo_camille', 2_100_00], [hugo.id, 'acc_demo_hugo', 2_900_00]];
+        for (const [personId, accountId, amount] of salaries) {
+          db.insert(expenses).values({ id: newId('e_'), amountCents: amount, categoryId: 'cat_other', date: toIsoDate(new Date(year, month, 1)), paidById: personId, shared: false, note: 'Salaire', recurringId: null, kind: 'income', incomeSource: 'salary', accountId, createdAt: new Date(year, month, 1, 7).toISOString() }).run();
+          db.insert(expenses).values({ id: newId('e_'), amountCents: personId === camille.id ? 1_000_00 : 1_400_00, categoryId: 'cat_other', date: toIsoDate(new Date(year, month, 1)), paidById: personId, shared: true, note: 'Virement compte joint', recurringId: null, kind: 'transfer', accountId, toAccountId: 'acc_demo_joint', createdAt: new Date(year, month, 1, 8).toISOString() }).run();
+        }
+      }
       if (m > 0 || today.getDate() >= 2) {
         for (const f of fixed) {
           db.insert(expenses)
@@ -183,6 +197,7 @@ export function seedDemo(db: Db = getDemoDb()): void {
               shared: true,
               note: f.note,
               recurringId: null,
+              accountId: 'acc_demo_joint',
               createdAt: new Date(year, month, 2, 8).toISOString(),
             })
             .run();

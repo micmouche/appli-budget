@@ -6,6 +6,7 @@ import { getAppDb, getDemoDb, setDemoActive } from '@/db/client';
 import { bumpDataVersion } from '@/db/dataVersion';
 import { seedDemo } from '@/db/demo';
 import {
+  ensureDefaultAccount,
   ensureDefaultCategories,
   ensureHousehold,
   generateDueRecurring,
@@ -32,6 +33,7 @@ export async function bootstrap(): Promise<void> {
   if (settings.demoMode) ensureDemoSeeded();
   // 3. Données par défaut de la base réelle
   ensureDefaultCategories(getAppDb());
+  ensureDefaultAccount(i18n.t('budget.accounts.types.checking'), getAppDb());
   if (settings.onboardingDone) {
     ensureHousehold(settings.couple, [i18n.t('common.me'), i18n.t('budget.person2')], getAppDb());
   }

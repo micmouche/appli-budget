@@ -6,7 +6,9 @@ import { Alert, View } from 'react-native';
 
 import { SubScreenHeader } from '@/core/SubScreenHeader';
 import { categoryLabel, deleteExpense, getExpense, restoreExpense, updateExpense } from '@/db/repositories';
-import { useCategories, usePersons } from '@/features/budget/hooks';
+import { ACCOUNT_ICONS } from '@/features/budget/AccountsStrip';
+import { useAccounts, useCategories, usePersons } from '@/features/budget/hooks';
+import { INCOME_SOURCES } from '@/db/schema';
 import { useQuery } from '@/db/useQuery';
 import { useSettings } from '@/store/settings';
 import { useTheme } from '@/theme/ThemeProvider';
@@ -29,6 +31,7 @@ export default function ExpenseDetailScreen(): React.JSX.Element {
   const categories = useCategories();
   const persons = usePersons();
   const couple = useSettings((s) => s.couple);
+  const { accounts } = useAccounts();
 
   const [amountCents, setAmountCents] = useState<number | null>(expense?.amountCents ?? null);
   const [categoryId, setCategoryId] = useState(expense?.categoryId ?? '');
@@ -38,6 +41,8 @@ export default function ExpenseDetailScreen(): React.JSX.Element {
     expense?.shared === false ? 'personal' : 'shared',
   );
   const [note, setNote] = useState(expense?.note ?? '');
+  const [accountId, setAccountId] = useState<string | null>(expense?.accountId ?? null);
+  const [incomeSource, setIncomeSource] = useState(expense?.incomeSource ?? 'other');
 
   if (!expense) {
     return (
@@ -52,7 +57,7 @@ export default function ExpenseDetailScreen(): React.JSX.Element {
       haptics.error();
       return;
     }
-    updateExpense(expense.id, { amountCents, categoryId, date, paidById, shared: shared === 'shared', note });
+    updateExpense(expense.id, { amountCents, categoryId, date, paidById, shared: shared === 'shared', note, accountId, incomeSource: expense.kind === 'income' ? incomeSource : undefined });
     haptics.success();
     router.back();
   };
@@ -78,11 +83,30 @@ export default function ExpenseDetailScreen(): React.JSX.Element {
 
   return (
     <Screen keyboard>
-      <SubScreenHeader title={t('budget.editExpense')} />
+      <SubScreenHeader title={expense.kind === 'expense' ? t('budget.editExpense') : t(`budget.kinds.${expense.kind}`)} />
       <Card>
         <FormField label={t('budget.amount')}>
           <CurrencyInput valueCents={amountCents} onChangeCents={setAmountCents} />
         </FormField>
+        {expense.kind === 'income' ? (
+          <FormField label={t('budget.income.source')}>
+            <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
+              {INCOME_SOURCES.map((s) => (
+                <Chip key={s} label={t(`budget.income.sources.${s}`)} selected={incomeSource === s} onPress={() => setIncomeSource(s)} />
+              ))}
+            </View>
+          </FormField>
+        ) : null}
+        {accounts.length > 1 ? (
+          <FormField label={expense.kind === 'transfer' ? t('budget.transfer.from') : t('budget.accounts.account')}>
+            <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
+              {accounts.map((a) => (
+                <Chip key={a.account.id} label={a.account.name} icon={ACCOUNT_ICONS[a.account.type]} selected={accountId === a.account.id} onPress={() => setAccountId(a.account.id)} />
+              ))}
+            </View>
+          </FormField>
+        ) : null}
+        {expense.kind === 'expense' ? (
         <FormField label={t('budget.category')}>
           <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
             {categories.map((c) => (
@@ -97,10 +121,11 @@ export default function ExpenseDetailScreen(): React.JSX.Element {
             ))}
           </View>
         </FormField>
+        ) : null}
         <FormField label={t('budget.date')}>
           <DateField value={date} onChange={setDate} />
         </FormField>
-        {couple ? (
+        {couple && expense.kind === 'expense' ? (
           <>
             <FormField label={t('budget.paidBy')}>
               <View style={{ flexDirection: 'row', gap: 8 }}>

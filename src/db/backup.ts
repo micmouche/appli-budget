@@ -22,8 +22,7 @@ import {
   workLots,
   workQuotes,
   workPayments,
-  importRules,
-} from './schema';
+  importRules, accounts } from './schema';
 import type {
   Category,
   Expense,
@@ -42,8 +41,7 @@ import type {
   WorkLot,
   WorkQuote,
   WorkPayment,
-  ImportRule,
-} from './schema';
+  ImportRule, Account } from './schema';
 
 export const BACKUP_FORMAT = 'pecule-backup';
 export const BACKUP_VERSION = 1;
@@ -72,6 +70,7 @@ export interface Backup {
     workQuotes?: WorkQuote[];
     workPayments?: WorkPayment[];
     importRules?: ImportRule[];
+    accounts?: Account[];
   };
 }
 
@@ -101,6 +100,7 @@ export function createBackup(): Backup {
       workQuotes: db.select().from(workQuotes).all(),
       workPayments: db.select().from(workPayments).all(),
       importRules: db.select().from(importRules).all(),
+      accounts: db.select().from(accounts).all(),
     },
   };
 }
@@ -141,6 +141,7 @@ export function parseBackup(text: string): Backup | null {
         workQuotes: Array.isArray(d.workQuotes) ? d.workQuotes : [],
         workPayments: Array.isArray(d.workPayments) ? d.workPayments : [],
         importRules: Array.isArray(d.importRules) ? d.importRules : [],
+        accounts: Array.isArray(d.accounts) ? d.accounts : [],
       },
     };
   } catch {
@@ -171,6 +172,7 @@ export function restoreBackup(backup: Backup): void {
     for (const q of backup.data.workQuotes ?? []) db.insert(workQuotes).values(q).run();
     for (const wp of backup.data.workPayments ?? []) db.insert(workPayments).values(wp).run();
     for (const ir of backup.data.importRules ?? []) db.insert(importRules).values(ir).run();
+    for (const a of backup.data.accounts ?? []) db.insert(accounts).values(a).run();
   });
   bumpDataVersion();
 }

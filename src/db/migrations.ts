@@ -275,6 +275,34 @@ export const migrations: Migration[] = [
       UPDATE persons SET color_index = position + 1;
     `,
   },
+  {
+    version: 8,
+    description: 'Comptes et opérations : revenus, transferts, compte par opération',
+    sql: `
+      CREATE TABLE IF NOT EXISTS accounts (
+        id TEXT PRIMARY KEY NOT NULL,
+        name TEXT NOT NULL,
+        type TEXT NOT NULL DEFAULT 'checking',
+        owner_id TEXT,
+        initial_balance_cents INTEGER NOT NULL DEFAULT 0,
+        color_index INTEGER NOT NULL DEFAULT 0,
+        is_default INTEGER NOT NULL DEFAULT 0,
+        position INTEGER NOT NULL DEFAULT 0,
+        archived INTEGER NOT NULL DEFAULT 0,
+        updated_at TEXT,
+        deleted_at TEXT,
+        created_at TEXT NOT NULL
+      );
+      ALTER TABLE expenses ADD COLUMN kind TEXT NOT NULL DEFAULT 'expense';
+      ALTER TABLE expenses ADD COLUMN account_id TEXT;
+      ALTER TABLE expenses ADD COLUMN to_account_id TEXT;
+      ALTER TABLE expenses ADD COLUMN income_source TEXT;
+      ALTER TABLE expenses ADD COLUMN updated_at TEXT;
+      ALTER TABLE expenses ADD COLUMN deleted_at TEXT;
+      CREATE INDEX IF NOT EXISTS idx_expenses_kind ON expenses(kind, date);
+      CREATE INDEX IF NOT EXISTS idx_expenses_account ON expenses(account_id);
+    `,
+  },
 ];
 
 export const LATEST_SCHEMA_VERSION = migrations[migrations.length - 1]?.version ?? 0;

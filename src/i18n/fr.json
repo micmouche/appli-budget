@@ -157,7 +157,22 @@
     "setBudget": "Définir une enveloppe",
     "budgetAmount": "Enveloppe mensuelle",
     "ofBudget": "sur {{amount}}",
-    "income": "Revenus du foyer",
+    "income": {
+      "source": "Nature du revenu",
+      "sources": {
+        "salary": "Salaire",
+        "bonus": "Prime",
+        "benefits": "Aides / allocations",
+        "refund": "Remboursement",
+        "rent": "Loyer perçu",
+        "gift": "Cadeau",
+        "sale": "Vente",
+        "other": "Autre"
+      },
+      "recorded": "Revenus encaissés",
+      "expected": "Revenus prévus",
+      "added": "{{source}} · {{amount}} ajouté"
+    },
     "person1": "Personne 1",
     "person2": "Personne 2",
     "personName": "Prénom",
@@ -205,7 +220,48 @@
       "sharedDefault": "Dépenses communes",
       "payer": "Payées par",
       "learned": "Catégorie mémorisée pour « {{label}} »"
-    }
+    },
+    "accounts": {
+      "title": "Comptes",
+      "account": "Compte",
+      "noAccounts": "Aucun compte",
+      "addAccount": "Nouveau compte",
+      "editAccount": "Modifier le compte",
+      "name": "Nom du compte",
+      "type": "Type",
+      "types": {
+        "checking": "Compte courant",
+        "joint": "Compte joint",
+        "cash": "Espèces",
+        "card": "Carte / crédit",
+        "other": "Autre"
+      },
+      "initialBalance": "Solde de départ",
+      "initialBalanceHint": "Le solde réel du compte au moment où vous commencez à saisir",
+      "balance": "Solde",
+      "totalBalance": "Solde total",
+      "defaultAccount": "Compte par défaut",
+      "operations": "Opérations",
+      "noOperations": "Aucune opération",
+      "deleteWithOps": "Ce compte contient {{count}} opération(s). Elles seront déplacées vers « {{target}} ».",
+      "owner": "Titulaire",
+      "ownerShared": "Commun"
+    },
+    "kinds": {
+      "expense": "Dépense",
+      "income": "Revenu",
+      "transfer": "Transfert"
+    },
+    "transfer": {
+      "from": "Depuis",
+      "to": "Vers",
+      "toSavings": "Vers l'épargne",
+      "added": "Transfert de {{amount}} enregistré",
+      "sameAccount": "Choisissez deux comptes différents"
+    },
+    "remainingToSpend": "Reste à dépenser",
+    "daysLeft": "{{count}} jours restants",
+    "spentOf": "Dépensé {{spent}} sur {{total}}"
   },
   "categories": {
     "housing": "Logement",

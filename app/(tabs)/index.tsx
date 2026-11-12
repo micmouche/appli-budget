@@ -1,5 +1,5 @@
 /** Accueil : tableau de bord (solde du mois, alertes, tuiles par module, rappel d'export). */
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
@@ -7,7 +7,7 @@ import { differenceInDays } from 'date-fns';
 
 import { setDemoMode } from '@/core/bootstrap';
 import { shiftMonthKey } from '@/db/repositories';
-import { useBudgetMonth, useCurrentMonthKey, useMonthlyTotals, personName } from '@/features/budget/hooks';
+import { useBudgetMonth, useCurrentMonthKey, personName } from '@/features/budget/hooks';
 import { useSavings } from '@/features/savings/hooks';
 import { useScenarios } from '@/features/property/hooks';
 import { useRentals } from '@/features/rental/hooks';
@@ -16,7 +16,6 @@ import { usePremium } from '@/purchases';
 import { useSettings } from '@/store/settings';
 import { useTheme } from '@/theme/ThemeProvider';
 import type { HomeCardId } from '@/store/settings';
-import { Amount } from '@/ui/Amount';
 import { Banner } from '@/ui/Banner';
 import { Card } from '@/ui/Card';
 import { Fab } from '@/ui/Fab';
@@ -26,7 +25,6 @@ import { AvatarGroup } from '@/ui/avatar/Avatar';
 import { Screen } from '@/ui/Screen';
 import { StatTile } from '@/ui/StatTile';
 import { Text } from '@/ui/Text';
-import { Sparkline } from '@/ui/charts/Sparkline';
 import { formatCents, formatDate, formatMonthKey, formatPct } from '@/utils/format';
 import { percentOf } from '@/finance/money';
 
@@ -37,9 +35,12 @@ export default function HomeScreen(): React.JSX.Element {
   const monthKey = useCurrentMonthKey();
   const month = useBudgetMonth(monthKey);
   const previous = useBudgetMonth(shiftMonthKey(monthKey, -1));
-  const totals = useMonthlyTotals(monthKey, 6);
   const homeCards = useSettings((s) => s.homeCards);
   const demoMode = useSettings((s) => s.demoMode);
+  const [daysLeft] = useState(() => {
+    const now = new Date();
+    return new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate() - now.getDate() + 1;
+  });
   const lastExportAt = useSettings((s) => s.lastExportAt);
   const { isPremium } = usePremium();
   const savings = useSavings();
@@ -52,7 +53,11 @@ export default function HomeScreen(): React.JSX.Element {
   const hour = new Date().getHours();
   const first = month.persons[0];
   const partner = month.persons[1];
-  const greeting = first ? t('profile.greeting', { name: first.name }) : hour < 18 ? t('home.greetingMorning') : t('home.greetingEvening');
+  const greeting = first
+    ? t('profile.greeting', { name: first.name })
+    : hour < 18
+      ? t('home.greetingMorning')
+      : t('home.greetingEvening');
   const subtitle = `${formatMonthKey(monthKey)} · ${partner ? t('profile.sharedWith', { name: partner.name }) : t('profile.soloHousehold')}`;
   const variation =
     previous.totalCents > 0
@@ -200,7 +205,12 @@ export default function HomeScreen(): React.JSX.Element {
         title={greeting}
         subtitle={subtitle}
         headerRight={
-          <PressableScale onPress={() => router.push('/(tabs)/reglages')} haptic="light" accessibilityRole="button" accessibilityLabel={t('profile.profiles')}>
+          <PressableScale
+            onPress={() => router.push('/(tabs)/reglages')}
+            haptic="light"
+            accessibilityRole="button"
+            accessibilityLabel={t('profile.profiles')}
+          >
             <AvatarGroup persons={month.persons} size={34} />
           </PressableScale>
         }
@@ -218,45 +228,95 @@ export default function HomeScreen(): React.JSX.Element {
           </View>
         ) : null}
 
-        {/* Carte héros */}
-        <Card
+        {/* Carte héros : reste à dépenser */}
+        <PressableScale
           onPress={() => router.push('/(tabs)/budget')}
-          style={{ marginBottom: theme.spacing[3] }}
-          accessibilityLabel={t('home.monthBalance')}
+          haptic="light"
+          accessibilityRole="button"
+          accessibilityLabel={t('budget.remainingToSpend')}
+          style={{
+            marginBottom: theme.spacing[3],
+            backgroundColor: theme.colors.brand,
+            borderRadius: theme.radius.lg,
+            padding: theme.spacing[4],
+            overflow: 'hidden',
+          }}
         >
-          <Text variant="caption" color="textSecondary">
-            {t('home.monthBalance')}
+          <View
+            style={{
+              position: 'absolute',
+              right: -40,
+              top: -50,
+              width: 160,
+              height: 160,
+              borderRadius: 80,
+              backgroundColor: 'rgba(255,255,255,0.08)',
+            }}
+          />
+          <View
+            style={{
+              position: 'absolute',
+              right: 30,
+              bottom: -70,
+              width: 140,
+              height: 140,
+              borderRadius: 70,
+              backgroundColor: 'rgba(255,255,255,0.06)',
+            }}
+          />
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+            <Text variant="caption" style={{ color: 'rgba(255,255,255,0.85)' }}>
+              {t('budget.remainingToSpend')}
+            </Text>
+            <View
+              style={{
+                backgroundColor: 'rgba(255,255,255,0.18)',
+                borderRadius: 999,
+                paddingHorizontal: 10,
+                paddingVertical: 4,
+              }}
+            >
+              <Text variant="caption" style={{ color: theme.colors.onBrand }}>
+                {t('budget.daysLeft', { count: daysLeft })}
+              </Text>
+            </View>
+          </View>
+          <Text variant="display" tabular style={{ color: theme.colors.onBrand, marginTop: 4 }}>
+            {formatCents(month.balanceCents)}
           </Text>
-          <Amount cents={month.balanceCents} variant="display" colored style={{ marginTop: 4 }} />
-          <View style={{ flexDirection: 'row', gap: theme.spacing[5], marginTop: theme.spacing[3] }}>
-            <View>
-              <Text variant="caption" color="textMuted">
-                {t('home.income')}
-              </Text>
-              <Amount cents={month.incomeCents} variant="callout" />
-            </View>
-            <View>
-              <Text variant="caption" color="textMuted">
-                {t('home.expenses')}
-              </Text>
-              <Amount cents={month.totalCents} variant="callout" />
-            </View>
+          <View
+            style={{
+              height: 8,
+              borderRadius: 4,
+              backgroundColor: 'rgba(255,255,255,0.22)',
+              marginTop: theme.spacing[3],
+              overflow: 'hidden',
+            }}
+          >
+            <View
+              style={{
+                width: `${Math.round(Math.min(1, month.incomeCents > 0 ? month.totalCents / month.incomeCents : 0) * 100)}%`,
+                height: 8,
+                borderRadius: 4,
+                backgroundColor: theme.colors.onBrand,
+              }}
+            />
+          </View>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 8 }}>
+            <Text variant="caption" style={{ color: 'rgba(255,255,255,0.85)' }}>
+              {t('budget.spentOf', {
+                spent: formatCents(month.totalCents),
+                total: formatCents(month.incomeCents),
+              })}
+            </Text>
             {variation !== null ? (
-              <View>
-                <Text variant="caption" color="textMuted">
-                  {t('home.vsLastMonth')}
-                </Text>
-                <Text variant="callout" tabular color={variation > 0 ? 'negative' : 'positive'}>
-                  {variation > 0 ? '+' : ''}
-                  {formatPct(variation)}
-                </Text>
-              </View>
+              <Text variant="caption" tabular style={{ color: 'rgba(255,255,255,0.85)' }}>
+                {variation > 0 ? '+' : ''}
+                {formatPct(variation)} {t('home.vsLastMonth').toLowerCase()}
+              </Text>
             ) : null}
           </View>
-          <View style={{ marginTop: theme.spacing[3] }}>
-            <Sparkline values={totals.map((m) => m.totalCents)} height={40} color={theme.colors.textMuted} />
-          </View>
-        </Card>
+        </PressableScale>
 
         {/* Alertes */}
         {alerts.length > 0 ? (
@@ -380,7 +440,19 @@ export default function HomeScreen(): React.JSX.Element {
               />
             );
           })}
-          <Card onPress={() => router.push('/(tabs)/reglages/accueil')} tone="surface2" style={{ minWidth: '47%', flex: 1, minHeight: 120, borderStyle: 'dashed', borderColor: theme.colors.border, borderWidth: 1 }} accessibilityLabel={t('home.addCard')}>
+          <Card
+            onPress={() => router.push('/(tabs)/reglages/accueil')}
+            tone="surface2"
+            style={{
+              minWidth: '47%',
+              flex: 1,
+              minHeight: 120,
+              borderStyle: 'dashed',
+              borderColor: theme.colors.border,
+              borderWidth: 1,
+            }}
+            accessibilityLabel={t('home.addCard')}
+          >
             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', gap: 6 }}>
               <Icon name="Plus" color="textSecondary" size={22} />
               <Text variant="caption" color="textSecondary">

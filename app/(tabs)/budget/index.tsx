@@ -4,6 +4,7 @@ import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 
+import { AccountsStrip } from '@/features/budget/AccountsStrip';
 import { ExpenseRow } from '@/features/budget/ExpenseRow';
 import { exportMonthCsv, exportMonthPdf } from '@/features/budget/export';
 import { personName, useBudgetMonth, useCurrentMonthKey } from '@/features/budget/hooks';
@@ -120,6 +121,10 @@ export default function BudgetScreen(): React.JSX.Element {
           shift={shiftMonthKey}
           canGoForward={monthKey < currentKey}
         />
+
+        <View style={{ marginTop: theme.spacing[3] }}>
+          <AccountsStrip />
+        </View>
 
         {/* Solde */}
         <Card style={{ marginTop: theme.spacing[3] }}>

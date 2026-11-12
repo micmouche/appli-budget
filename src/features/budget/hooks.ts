@@ -12,12 +12,17 @@ import {
   categoryLabel,
   currentMonthKey,
   getSettlementForMonth,
+  listAccounts,
+  listAllTransactions,
   listCategories,
   listExpensesForMonth,
   listPersons,
+  listTransactionsForMonth,
   monthlyTotals,
 } from '@/db/repositories';
-import type { Category, Expense, Person } from '@/db/schema';
+import type { Account, Category, Expense, Person } from '@/db/schema';
+
+import { accountBalance } from './accounts';
 import { useSettings } from '@/store/settings';
 
 export interface CategoryTotal {
@@ -42,10 +47,18 @@ export function useBudgetMonth(monthKey: string) {
   const categories = useQuery(() => listCategories(), []);
   const persons = useQuery(() => listPersons(), []);
   const settlementRecord = useQuery(() => getSettlementForMonth(monthKey), [monthKey]);
+  const transactions = useQuery(
+    () => listTransactionsForMonth(monthKey, monthStartDay),
+    [monthKey, monthStartDay],
+  );
 
   return useMemo(() => {
     const totalCents = expenses.reduce((a, e) => a + e.amountCents, 0);
-    const incomeCents = persons.reduce((a, p) => a + p.monthlyIncomeCents, 0);
+    const incomes = transactions.filter((t) => t.kind === 'income');
+    const recordedIncomeCents = incomes.reduce((a, t) => a + t.amountCents, 0);
+    const expectedIncomeCents = persons.reduce((a, p) => a + p.monthlyIncomeCents, 0);
+    /** Revenus du mois : encaissés s'il y en a, sinon revenus déclarés du foyer. */
+    const incomeCents = recordedIncomeCents > 0 ? recordedIncomeCents : expectedIncomeCents;
     const byCategory = new Map<string, { totalCents: number; count: number }>();
     for (const e of expenses) {
       const cur = byCategory.get(e.categoryId) ?? { totalCents: 0, count: 0 };
@@ -85,7 +98,7 @@ export function useBudgetMonth(monthKey: string) {
       settlement,
       settlementRecord,
     };
-  }, [expenses, categories, persons, splitMode, customPctPerson1, settlementRecord]);
+  }, [expenses, transactions, categories, persons, splitMode, customPctPerson1, settlementRecord]);
 }
 
 export function useMonthlyTotals(lastMonthKey: string, months: number) {
@@ -113,3 +126,29 @@ export function personName(
 }
 
 export type { Expense };
+
+export interface AccountView {
+  account: Account;
+  balanceCents: number;
+}
+
+/** Comptes du quotidien avec leur solde courant. */
+export function useAccounts(): {
+  accounts: AccountView[];
+  totalCents: number;
+  defaultAccount: Account | undefined;
+} {
+  const rows = useQuery(() => listAccounts(), []);
+  const txs = useQuery(() => listAllTransactions(), []);
+  return useMemo(() => {
+    const accounts = rows.map((account) => ({
+      account,
+      balanceCents: accountBalance(account.id, account.initialBalanceCents, txs),
+    }));
+    return {
+      accounts,
+      totalCents: accounts.reduce((a, v) => a + v.balanceCents, 0),
+      defaultAccount: rows.find((a) => a.isDefault) ?? rows[0],
+    };
+  }, [rows, txs]);
+}

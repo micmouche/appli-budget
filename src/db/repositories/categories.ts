@@ -1,5 +1,5 @@
 /** Catégories de dépenses et enveloppes. */
-import { asc, eq, sql } from 'drizzle-orm';
+import { and, asc, eq, isNull, sql } from 'drizzle-orm';
 
 import i18n from '@/i18n';
 import { newId } from '@/utils/id';
@@ -95,7 +95,7 @@ export function countExpensesInCategory(id: string, db: Db = getDb()): number {
     db
       .select({ n: sql<number>`count(*)` })
       .from(expenses)
-      .where(eq(expenses.categoryId, id))
+      .where(and(eq(expenses.categoryId, id), isNull(expenses.deletedAt)))
       .get()?.n ?? 0
   );
 }

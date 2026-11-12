@@ -56,8 +56,42 @@ export const expenses = sqliteTable('expenses', {
   recurringId: text('recurring_id'),
   /** Empreinte de l'opération bancaire importée (anti-doublon). */
   importKey: text('import_key'),
+  /** Nature de l'opération : dépense, revenu ou transfert entre comptes. */
+  kind: text('kind', { enum: ['expense', 'income', 'transfer'] }).notNull().default('expense'),
+  /** Compte débité (dépense, transfert) ou crédité (revenu). */
+  accountId: text('account_id'),
+  /** Compte crédité d'un transfert ; « sav:<id> » pour un compte d'épargne. */
+  toAccountId: text('to_account_id'),
+  /** Nature d'un revenu (salaire, prime…). */
+  incomeSource: text('income_source'),
+  updatedAt: text('updated_at'),
+  deletedAt: text('deleted_at'),
   createdAt: text('created_at').notNull(),
 });
+
+export const ACCOUNT_TYPES = ['checking', 'joint', 'cash', 'card', 'other'] as const;
+export type AccountType = (typeof ACCOUNT_TYPES)[number];
+export const INCOME_SOURCES = ['salary', 'bonus', 'benefits', 'refund', 'rent', 'gift', 'sale', 'other'] as const;
+export type IncomeSource = (typeof INCOME_SOURCES)[number];
+
+/** Comptes du quotidien (courant, joint, espèces, carte). */
+export const accounts = sqliteTable('accounts', {
+  id: text('id').primaryKey(),
+  name: text('name').notNull(),
+  type: text('type', { enum: ACCOUNT_TYPES }).notNull().default('checking'),
+  /** Titulaire (membre) ; null = commun. */
+  ownerId: text('owner_id'),
+  initialBalanceCents: integer('initial_balance_cents').notNull().default(0),
+  colorIndex: integer('color_index').notNull().default(0),
+  isDefault: integer('is_default', { mode: 'boolean' }).notNull().default(false),
+  position: integer('position').notNull().default(0),
+  archived: integer('archived', { mode: 'boolean' }).notNull().default(false),
+  updatedAt: text('updated_at'),
+  deletedAt: text('deleted_at'),
+  createdAt: text('created_at').notNull(),
+});
+export type Account = typeof accounts.$inferSelect;
+export type TransactionKind = Expense['kind'];
 
 export const recurringExpenses = sqliteTable('recurring_expenses', {
   id: text('id').primaryKey(),

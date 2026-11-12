@@ -76,7 +76,7 @@ export function getDb(): Db {
 export function clearDataTables(db: Db): void {
   db.$client.withTransactionSync(() => {
     db.$client.execSync(
-      'DELETE FROM expenses; DELETE FROM recurring_expenses; DELETE FROM settlements; DELETE FROM categories; DELETE FROM persons; DELETE FROM savings_movements; DELETE FROM savings_goals; DELETE FROM savings_accounts; DELETE FROM property_scenarios; DELETE FROM rent_payments; DELETE FROM rental_charges; DELETE FROM leases; DELETE FROM rental_properties; DELETE FROM work_payments; DELETE FROM work_quotes; DELETE FROM work_lots; DELETE FROM work_projects; DELETE FROM import_rules;',
+      'DELETE FROM expenses; DELETE FROM recurring_expenses; DELETE FROM settlements; DELETE FROM categories; DELETE FROM persons; DELETE FROM savings_movements; DELETE FROM savings_goals; DELETE FROM savings_accounts; DELETE FROM property_scenarios; DELETE FROM rent_payments; DELETE FROM rental_charges; DELETE FROM leases; DELETE FROM rental_properties; DELETE FROM work_payments; DELETE FROM work_quotes; DELETE FROM work_lots; DELETE FROM work_projects; DELETE FROM import_rules; DELETE FROM accounts;',
     );
   });
 }

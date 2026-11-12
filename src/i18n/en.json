@@ -157,7 +157,22 @@
     "setBudget": "Set an envelope",
     "budgetAmount": "Monthly envelope",
     "ofBudget": "of {{amount}}",
-    "income": "Household income",
+    "income": {
+      "source": "Income type",
+      "sources": {
+        "salary": "Salary",
+        "bonus": "Bonus",
+        "benefits": "Benefits",
+        "refund": "Refund",
+        "rent": "Rent received",
+        "gift": "Gift",
+        "sale": "Sale",
+        "other": "Other"
+      },
+      "recorded": "Income received",
+      "expected": "Expected income",
+      "added": "{{source}} · {{amount}} added"
+    },
     "person1": "Person 1",
     "person2": "Person 2",
     "personName": "First name",
@@ -205,7 +220,48 @@
       "sharedDefault": "Shared expenses",
       "payer": "Paid by",
       "learned": "Category remembered for “{{label}}”"
-    }
+    },
+    "accounts": {
+      "title": "Accounts",
+      "account": "Account",
+      "noAccounts": "No account",
+      "addAccount": "New account",
+      "editAccount": "Edit account",
+      "name": "Account name",
+      "type": "Type",
+      "types": {
+        "checking": "Checking",
+        "joint": "Joint account",
+        "cash": "Cash",
+        "card": "Card / credit",
+        "other": "Other"
+      },
+      "initialBalance": "Opening balance",
+      "initialBalanceHint": "The real balance when you start recording",
+      "balance": "Balance",
+      "totalBalance": "Total balance",
+      "defaultAccount": "Default account",
+      "operations": "Transactions",
+      "noOperations": "No transaction",
+      "deleteWithOps": "This account holds {{count}} transaction(s). They will move to “{{target}}”.",
+      "owner": "Owner",
+      "ownerShared": "Shared"
+    },
+    "kinds": {
+      "expense": "Expense",
+      "income": "Income",
+      "transfer": "Transfer"
+    },
+    "transfer": {
+      "from": "From",
+      "to": "To",
+      "toSavings": "To savings",
+      "added": "Transfer of {{amount}} recorded",
+      "sameAccount": "Pick two different accounts"
+    },
+    "remainingToSpend": "Left to spend",
+    "daysLeft": "{{count}} days left",
+    "spentOf": "Spent {{spent}} of {{total}}"
   },
   "categories": {
     "housing": "Housing",

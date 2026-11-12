@@ -1,5 +1,5 @@
 /** Dépenses : CRUD, agrégats mensuels, récurrences. */
-import { and, desc, eq, gte, lt, sql } from 'drizzle-orm';
+import { and, desc, eq, gte, isNull, lt, or, sql } from 'drizzle-orm';
 import { addMonths, addWeeks, addYears } from 'date-fns';
 
 import { budgetMonthRange, type SplitMode } from '@/finance/budget';
@@ -8,7 +8,8 @@ import { fromIsoDate, toIsoDate } from '@/utils/format';
 
 import { getDb, type Db } from '../client';
 import { bumpDataVersion } from '../dataVersion';
-import { expenses, recurringExpenses, type Expense, type Frequency, type RecurringExpense } from '../schema';
+import { expenses, recurringExpenses, type Expense, type Frequency, type RecurringExpense, type TransactionKind } from '../schema';
+import { defaultAccount } from './accounts';
 
 export interface ExpenseInput {
   amountCents: number;
@@ -18,6 +19,10 @@ export interface ExpenseInput {
   shared: boolean;
   note?: string | null;
   importKey?: string | null;
+  kind?: TransactionKind;
+  accountId?: string | null;
+  toAccountId?: string | null;
+  incomeSource?: string | null;
 }
 
 export function createExpense(input: ExpenseInput, db: Db = getDb()): Expense {
@@ -31,6 +36,12 @@ export function createExpense(input: ExpenseInput, db: Db = getDb()): Expense {
     note: input.note?.trim() || null,
     recurringId: null,
     importKey: input.importKey ?? null,
+    kind: input.kind ?? 'expense',
+    accountId: input.accountId ?? defaultAccount(db)?.id ?? null,
+    toAccountId: input.toAccountId ?? null,
+    incomeSource: input.incomeSource ?? null,
+    updatedAt: new Date().toISOString(),
+    deletedAt: null,
     createdAt: new Date().toISOString(),
   };
   db.insert(expenses).values(row).run();
@@ -40,7 +51,7 @@ export function createExpense(input: ExpenseInput, db: Db = getDb()): Expense {
 
 export function updateExpense(id: string, patch: Partial<ExpenseInput>, db: Db = getDb()): void {
   db.update(expenses)
-    .set({ ...patch, note: patch.note === undefined ? undefined : patch.note?.trim() || null })
+    .set({ ...patch, note: patch.note === undefined ? undefined : patch.note?.trim() || null, updatedAt: new Date().toISOString() })
     .where(eq(expenses.id, id))
     .run();
   bumpDataVersion();
@@ -48,14 +59,14 @@ export function updateExpense(id: string, patch: Partial<ExpenseInput>, db: Db =
 
 export function deleteExpense(id: string, db: Db = getDb()): Expense | undefined {
   const row = db.select().from(expenses).where(eq(expenses.id, id)).get();
-  db.delete(expenses).where(eq(expenses.id, id)).run();
+  db.update(expenses).set({ deletedAt: new Date().toISOString(), updatedAt: new Date().toISOString() }).where(eq(expenses.id, id)).run();
   bumpDataVersion();
   return row;
 }
 
-/** Ré-insère une dépense supprimée (bouton « Annuler » du toast). */
+/** Annule une suppression (bouton « Annuler » du toast). */
 export function restoreExpense(row: Expense, db: Db = getDb()): void {
-  db.insert(expenses).values(row).onConflictDoNothing().run();
+  db.update(expenses).set({ deletedAt: null, updatedAt: new Date().toISOString() }).where(eq(expenses.id, row.id)).run();
   bumpDataVersion();
 }
 
@@ -69,9 +80,36 @@ export function listExpensesForMonth(monthKey: string, monthStartDay: number, db
   return db
     .select()
     .from(expenses)
-    .where(and(gte(expenses.date, toIsoDate(start)), lt(expenses.date, toIsoDate(end))))
+    .where(and(gte(expenses.date, toIsoDate(start)), lt(expenses.date, toIsoDate(end)), eq(expenses.kind, 'expense'), isNull(expenses.deletedAt)))
     .orderBy(desc(expenses.date), desc(expenses.createdAt))
     .all();
+}
+
+/** Toutes les opérations (dépenses, revenus, transferts) d'un mois budgétaire. */
+export function listTransactionsForMonth(monthKey: string, monthStartDay: number, db: Db = getDb()): Expense[] {
+  const { start, end } = rangeForMonthKey(monthKey, monthStartDay);
+  return db
+    .select()
+    .from(expenses)
+    .where(and(gte(expenses.date, toIsoDate(start)), lt(expenses.date, toIsoDate(end)), isNull(expenses.deletedAt)))
+    .orderBy(desc(expenses.date), desc(expenses.createdAt))
+    .all();
+}
+
+/** Opérations d'un compte (débit ou crédit), les plus récentes d'abord. */
+export function listTransactionsForAccount(accountId: string, limit = 200, db: Db = getDb()): Expense[] {
+  return db
+    .select()
+    .from(expenses)
+    .where(and(or(eq(expenses.accountId, accountId), eq(expenses.toAccountId, accountId)), isNull(expenses.deletedAt)))
+    .orderBy(desc(expenses.date), desc(expenses.createdAt))
+    .limit(limit)
+    .all();
+}
+
+/** Toutes les opérations vivantes (calcul des soldes). */
+export function listAllTransactions(db: Db = getDb()): Expense[] {
+  return db.select().from(expenses).where(isNull(expenses.deletedAt)).all();
 }
 
 /** Bornes du mois budgétaire identifié par sa clé. */
@@ -119,7 +157,7 @@ export function monthlyTotals(
     const row = db
       .select({ total: sql<number>`coalesce(sum(amount_cents), 0)`, n: sql<number>`count(*)` })
       .from(expenses)
-      .where(and(gte(expenses.date, toIsoDate(start)), lt(expenses.date, toIsoDate(end))))
+      .where(and(gte(expenses.date, toIsoDate(start)), lt(expenses.date, toIsoDate(end)), eq(expenses.kind, 'expense'), isNull(expenses.deletedAt)))
       .get();
     result.push({ monthKey: key, totalCents: row?.total ?? 0, count: row?.n ?? 0 });
   }
@@ -127,7 +165,7 @@ export function monthlyTotals(
 }
 
 export function listAllExpenses(db: Db = getDb()): Expense[] {
-  return db.select().from(expenses).orderBy(desc(expenses.date)).all();
+  return db.select().from(expenses).where(and(eq(expenses.kind, 'expense'), isNull(expenses.deletedAt))).orderBy(desc(expenses.date)).all();
 }
 
 // ---------------------------------------------------------------------------
@@ -219,6 +257,12 @@ export function generateDueRecurring(today = new Date(), db: Db = getDb()): numb
             note: r.note,
             recurringId: r.id,
             importKey: null,
+            kind: 'expense',
+            accountId: defaultAccount(db)?.id ?? null,
+            toAccountId: null,
+            incomeSource: null,
+            updatedAt: new Date().toISOString(),
+            deletedAt: null,
             createdAt: new Date().toISOString(),
           })
           .run();
