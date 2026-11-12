@@ -377,7 +377,7 @@
     "balance": "Solde",
     "movements": "Mouvements",
     "noMovements": "Aucun mouvement",
-    "addMovement": "Nouveau mouvement",
+    "addMovement": "Ajouter un versement",
     "editMovement": "Modifier le mouvement",
     "deposit": "Versement",
     "withdrawal": "Retrait",
@@ -431,7 +431,19 @@
       "other": "Autre"
     },
     "alertCeiling": "{{account}} : plafond bientôt atteint",
-    "alertGoalReached": "Objectif « {{goal}} » atteint"
+    "alertGoalReached": "Objectif « {{goal}} » atteint",
+    "allTime": "Depuis le début",
+    "synopsis": "Synthèse de l'épargne",
+    "thisMonth": "ce mois-ci",
+    "breakdown": "Répartition par compte",
+    "snapshotLabel": "Vue d'ensemble",
+    "filter": "Filtre",
+    "goalFilters": {
+      "all": "Tous",
+      "reached": "Objectif atteint",
+      "inProgress": "En cours"
+    },
+    "noGoalsForFilter": "Aucun objectif pour ce filtre"
   },
   "property": {
     "title": "Immobilier",

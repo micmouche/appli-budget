@@ -377,7 +377,7 @@
     "balance": "Balance",
     "movements": "Movements",
     "noMovements": "No movements",
-    "addMovement": "New movement",
+    "addMovement": "Add a deposit",
     "editMovement": "Edit movement",
     "deposit": "Deposit",
     "withdrawal": "Withdrawal",
@@ -431,7 +431,19 @@
       "other": "Other"
     },
     "alertCeiling": "{{account}}: ceiling almost reached",
-    "alertGoalReached": "Goal “{{goal}}” reached"
+    "alertGoalReached": "Goal “{{goal}}” reached",
+    "allTime": "All time",
+    "synopsis": "Savings synopsis",
+    "thisMonth": "this month",
+    "breakdown": "By account",
+    "snapshotLabel": "Snapshot",
+    "filter": "Filter",
+    "goalFilters": {
+      "all": "All",
+      "reached": "Goal achieved",
+      "inProgress": "In progress"
+    },
+    "noGoalsForFilter": "No goal for this filter"
   },
   "property": {
     "title": "Property",
