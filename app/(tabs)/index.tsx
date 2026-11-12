@@ -127,6 +127,7 @@ export default function HomeScreen(): React.JSX.Element {
         onMenu={() => router.push('/(tabs)/reglages')}
         onBell={() => router.push('/alertes')}
         bellCount={alerts.length}
+        onSettings={() => router.push('/(tabs)/reglages')}
         right={
           <PressableScale
             onPress={() => router.push('/(tabs)/reglages')}

@@ -56,7 +56,7 @@ export default function TabsLayout(): React.JSX.Element {
       {tab('budget', t('tabs.budget'), 'Wallet')}
       {tab('epargne', t('tabs.savings'), 'PiggyBank')}
       {tab('immo', t('tabs.property'), 'Building')}
-      {tab('reglages', t('tabs.settings'), 'Settings')}
+      <Tabs.Screen name="reglages" options={{ title: t('tabs.settings'), href: null }} />
     </Tabs>
   );
 }
