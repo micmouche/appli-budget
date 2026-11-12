@@ -29,20 +29,30 @@ interface TabRoute {
 /** Sous-ensemble des props de barre d'onglets fournies par expo-router. */
 export interface TabBarProps {
   state: { index: number; routes: TabRoute[] };
-  descriptors: Record<string, { options: { title?: string; href?: string | null } } | undefined>;
-  navigation: {
+  descriptors: Record<
+    string,
+    | { options: { title?: string; href?: string | null; hidden?: boolean; tabBarItemStyle?: unknown } }
+    | undefined
+  >;
+  /** Fournis par la barre d'onglets d'Expo Router (pas de `navigation`). */
+  emitter: {
     emit: (e: { type: 'tabPress'; target: string; canPreventDefault: true }) => { defaultPrevented: boolean };
-    navigate: (name: string) => void;
   };
+  navigateToTab: (routeKey: string) => void;
 }
 
-export function TabBar({ state, descriptors, navigation }: TabBarProps): React.JSX.Element {
+export function TabBar({ state, descriptors, emitter, navigateToTab }: TabBarProps): React.JSX.Element {
   const theme = useTheme();
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
   const bottom = Math.max(insets.bottom, Platform.OS === 'ios' ? 16 : 10);
-  const routes = state.routes.filter((r) => descriptors[r.key]?.options.href !== null);
+  const hidden = (key: string): boolean => {
+    const o = descriptors[key]?.options;
+    const st = o?.tabBarItemStyle as { display?: string } | undefined;
+    return o?.href === null || o?.hidden === true || st?.display === 'none';
+  };
+  const routes = state.routes.filter((r) => !hidden(r.key));
   const middle = Math.ceil(routes.length / 2);
   const item = (route: (typeof routes)[number]): React.JSX.Element => {
     const index = state.routes.findIndex((r) => r.key === route.key);
@@ -53,8 +63,8 @@ export function TabBar({ state, descriptors, navigation }: TabBarProps): React.J
       <PressableScale
         key={route.key}
         onPress={() => {
-          const event = navigation.emit({ type: 'tabPress', target: route.key, canPreventDefault: true });
-          if (!focused && !event.defaultPrevented) navigation.navigate(route.name);
+          const event = emitter.emit({ type: 'tabPress', target: route.key, canPreventDefault: true });
+          if (!focused && !event.defaultPrevented) navigateToTab(route.key);
         }}
         haptic="selection"
         accessibilityRole="tab"
