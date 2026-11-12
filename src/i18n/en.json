@@ -592,7 +592,8 @@
     "contact": "Contact support",
     "rate": "Rate the app",
     "licenses": "Open source licenses",
-    "redoOnboarding": "Restart onboarding"
+    "redoOnboarding": "Restart onboarding",
+    "label": "Profile and preferences"
   },
   "lock": {
     "title": "Pécule is locked",

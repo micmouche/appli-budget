@@ -592,7 +592,8 @@
     "contact": "Contacter le support",
     "rate": "Noter l'application",
     "licenses": "Licences open source",
-    "redoOnboarding": "Relancer l'onboarding"
+    "redoOnboarding": "Relancer l'onboarding",
+    "label": "Profil et préférences"
   },
   "lock": {
     "title": "Pécule est verrouillé",

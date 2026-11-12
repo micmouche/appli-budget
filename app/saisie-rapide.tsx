@@ -10,7 +10,13 @@ import Animated, { FadeIn, FadeOut, Layout } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { subDays } from 'date-fns';
 
-import { categoryLabel, createExpense, createSavingsMovement, deleteExpense, listSavingsAccounts } from '@/db/repositories';
+import {
+  categoryLabel,
+  createExpense,
+  createSavingsMovement,
+  deleteExpense,
+  listSavingsAccounts,
+} from '@/db/repositories';
 import { INCOME_SOURCES, type TransactionKind } from '@/db/schema';
 import { useQuery } from '@/db/useQuery';
 import { SAVINGS_PREFIX } from '@/features/budget/accounts';
@@ -67,7 +73,8 @@ export default function QuickAddScreen(): React.JSX.Element {
 
   const amountCents = useMemo(() => parseEurosInput(amountText), [amountText]);
   const canSave = amountCents !== null && amountCents > 0;
-  const fallbackCategoryId = categories.find((c) => c.id === OTHER_CATEGORY_ID)?.id ?? categories[0]?.id ?? OTHER_CATEGORY_ID;
+  const fallbackCategoryId =
+    categories.find((c) => c.id === OTHER_CATEGORY_ID)?.id ?? categories[0]?.id ?? OTHER_CATEGORY_ID;
 
   const finish = (message: string, createdId: string): void => {
     haptics.success();
@@ -81,8 +88,22 @@ export default function QuickAddScreen(): React.JSX.Element {
       return;
     }
     const category = categories.find((c) => c.id === categoryId);
-    const created = createExpense({ amountCents, categoryId, date: toIsoDate(date), paidById, shared, note, accountId });
-    finish(t('budget.expenseAdded', { category: category ? categoryLabel(category) : '', amount: formatCents(amountCents) }), created.id);
+    const created = createExpense({
+      amountCents,
+      categoryId,
+      date: toIsoDate(date),
+      paidById,
+      shared,
+      note,
+      accountId,
+    });
+    finish(
+      t('budget.expenseAdded', {
+        category: category ? categoryLabel(category) : '',
+        amount: formatCents(amountCents),
+      }),
+      created.id,
+    );
   };
 
   const saveIncome = (source: string): void => {
@@ -90,8 +111,24 @@ export default function QuickAddScreen(): React.JSX.Element {
       haptics.error();
       return;
     }
-    const created = createExpense({ amountCents, categoryId: fallbackCategoryId, date: toIsoDate(date), paidById, shared: false, note, kind: 'income', incomeSource: source, accountId });
-    finish(t('budget.income.added', { source: t(`budget.income.sources.${source}`), amount: formatCents(amountCents) }), created.id);
+    const created = createExpense({
+      amountCents,
+      categoryId: fallbackCategoryId,
+      date: toIsoDate(date),
+      paidById,
+      shared: false,
+      note,
+      kind: 'income',
+      incomeSource: source,
+      accountId,
+    });
+    finish(
+      t('budget.income.added', {
+        source: t(`budget.income.sources.${source}`),
+        amount: formatCents(amountCents),
+      }),
+      created.id,
+    );
   };
 
   const saveTransfer = (): void => {
@@ -99,21 +136,54 @@ export default function QuickAddScreen(): React.JSX.Element {
       haptics.error();
       return;
     }
-    const created = createExpense({ amountCents, categoryId: fallbackCategoryId, date: toIsoDate(date), paidById, shared: false, note, kind: 'transfer', accountId, toAccountId });
+    const created = createExpense({
+      amountCents,
+      categoryId: fallbackCategoryId,
+      date: toIsoDate(date),
+      paidById,
+      shared: false,
+      note,
+      kind: 'transfer',
+      accountId,
+      toAccountId,
+    });
     if (toAccountId.startsWith(SAVINGS_PREFIX)) {
-      createSavingsMovement({ accountId: toAccountId.slice(SAVINGS_PREFIX.length), type: 'deposit', amountCents, date: toIsoDate(date), note: note || t('budget.kinds.transfer') });
+      createSavingsMovement({
+        accountId: toAccountId.slice(SAVINGS_PREFIX.length),
+        type: 'deposit',
+        amountCents,
+        date: toIsoDate(date),
+        note: note || t('budget.kinds.transfer'),
+      });
     }
     finish(t('budget.transfer.added', { amount: formatCents(amountCents) }), created.id);
   };
 
-  const dateOptions = [date, subDays(new Date(), 1), subDays(new Date(), 2)].filter((d, i, arr) => arr.findIndex((x) => toIsoDate(x) === toIsoDate(d)) === i);
-  const title = kind === 'expense' ? t('budget.newExpense') : kind === 'income' ? t('budget.kinds.income') : t('budget.kinds.transfer');
-  const accountChips = (selected: string | null, onSelect: (id: string) => void, exclude?: string | null): React.JSX.Element => (
+  const dateOptions = [date, subDays(new Date(), 1), subDays(new Date(), 2)].filter(
+    (d, i, arr) => arr.findIndex((x) => toIsoDate(x) === toIsoDate(d)) === i,
+  );
+  const title =
+    kind === 'expense'
+      ? t('budget.newExpense')
+      : kind === 'income'
+        ? t('budget.kinds.income')
+        : t('budget.kinds.transfer');
+  const accountChips = (
+    selected: string | null,
+    onSelect: (id: string) => void,
+    exclude?: string | null,
+  ): React.JSX.Element => (
     <View style={styles.chipRow}>
       {accounts
         .filter((a) => a.account.id !== exclude)
         .map((a) => (
-          <Chip key={a.account.id} label={a.account.name} icon={ACCOUNT_ICONS[a.account.type]} selected={selected === a.account.id} onPress={() => onSelect(a.account.id)} />
+          <Chip
+            key={a.account.id}
+            label={a.account.name}
+            icon={ACCOUNT_ICONS[a.account.type]}
+            selected={selected === a.account.id}
+            onPress={() => onSelect(a.account.id)}
+          />
         ))}
     </View>
   );
@@ -121,9 +191,21 @@ export default function QuickAddScreen(): React.JSX.Element {
   return (
     <View style={{ flex: 1, backgroundColor: theme.colors.bg, paddingTop: insets.top + 8 }}>
       <View style={[styles.header, { paddingHorizontal: theme.spacing[3] }]}>
-        <IconButton name="X" accessibilityLabel={t('common.close')} onPress={() => router.back()} />
-        <Text variant="headline">{title}</Text>
-        <IconButton name={more ? 'ChevronUp' : 'SlidersHorizontal'} accessibilityLabel={t('common.more')} onPress={() => setMore((m) => !m)} />
+        <IconButton
+          name="X"
+          color="brand"
+          accessibilityLabel={t('common.close')}
+          onPress={() => router.back()}
+          filled
+        />
+        <Text variant="title2">{title}</Text>
+        <IconButton
+          name={more ? 'ChevronUp' : 'SlidersHorizontal'}
+          color="brand"
+          accessibilityLabel={t('common.more')}
+          onPress={() => setMore((m) => !m)}
+          filled
+        />
       </View>
 
       <View style={{ paddingHorizontal: theme.spacing[5], paddingTop: theme.spacing[2] }}>
@@ -138,46 +220,103 @@ export default function QuickAddScreen(): React.JSX.Element {
         />
       </View>
 
-      <View style={{ alignItems: 'center', paddingVertical: theme.spacing[3] }}>
-        <Text variant="display" tabular color={canSave ? (kind === 'income' ? 'positive' : 'text') : 'textMuted'} accessibilityLabel={`${t('budget.amount')} ${amountText || '0'}`}>
-          {kind === 'income' && canSave ? '+' : ''}
-          {amountText === '' ? '0' : amountText} €
-        </Text>
-        <Text variant="caption" color="textMuted" style={{ marginTop: 2 }}>
+      <View style={{ alignItems: 'center', paddingTop: theme.spacing[2], paddingBottom: theme.spacing[1] }}>
+        <View style={{ flexDirection: 'row', alignItems: 'flex-end' }}>
+          <Text
+            variant="hero"
+            tabular
+            color={canSave ? (kind === 'income' ? 'positive' : 'text') : 'textMuted'}
+            accessibilityLabel={`${t('budget.amount')} ${amountText || '0'}`}
+            numberOfLines={1}
+            adjustsFontSizeToFit
+            style={{ flexShrink: 1 }}
+          >
+            {kind === 'income' && canSave ? '+' : ''}
+            {amountText === '' ? '0' : amountText}
+          </Text>
+          <Text variant="title2" tabular color="textSecondary" style={{ marginBottom: 10, marginLeft: 4 }}>
+            €
+          </Text>
+        </View>
+        <Text variant="callout" color="textSecondary" style={{ marginTop: 2 }}>
           {formatRelativeDay(date)}
-          {accounts.find((a) => a.account.id === accountId) ? ` · ${accounts.find((a) => a.account.id === accountId)?.account.name}` : ''}
-          {kind === 'expense' && couple && paidById ? ` · ${persons.find((p) => p.id === paidById)?.name ?? ''}` : ''}
+          {accounts.find((a) => a.account.id === accountId)
+            ? ` · ${accounts.find((a) => a.account.id === accountId)?.account.name}`
+            : ''}
+          {kind === 'expense' && couple && paidById
+            ? ` · ${persons.find((p) => p.id === paidById)?.name ?? ''}`
+            : ''}
           {kind === 'expense' ? ` · ${shared ? t('budget.shared') : t('budget.personal')}` : ''}
         </Text>
       </View>
 
       {more ? (
-        <Animated.View entering={FadeIn.duration(200)} exiting={FadeOut.duration(150)} layout={Layout.duration(200)} style={{ paddingHorizontal: theme.spacing[5], gap: theme.spacing[2] }}>
+        <Animated.View
+          entering={FadeIn.duration(200)}
+          exiting={FadeOut.duration(150)}
+          layout={Layout.duration(200)}
+          style={{ paddingHorizontal: theme.spacing[5], gap: theme.spacing[2] }}
+        >
           <View style={styles.chipRow}>
             {dateOptions.map((d) => (
-              <Chip key={toIsoDate(d)} label={formatRelativeDay(d)} selected={toIsoDate(d) === toIsoDate(date)} onPress={() => setDate(d)} />
+              <Chip
+                key={toIsoDate(d)}
+                label={formatRelativeDay(d)}
+                selected={toIsoDate(d) === toIsoDate(date)}
+                onPress={() => setDate(d)}
+              />
             ))}
           </View>
           {kind !== 'transfer' && accounts.length > 1 ? accountChips(accountId, setAccountId) : null}
           {couple ? (
             <View style={styles.chipRow}>
               {persons.map((p) => (
-                <Chip key={p.id} label={p.name} icon="User" selected={paidById === p.id} onPress={() => setPaidById(p.id)} />
+                <Chip
+                  key={p.id}
+                  label={p.name}
+                  icon="User"
+                  selected={paidById === p.id}
+                  onPress={() => setPaidById(p.id)}
+                />
               ))}
-              {kind === 'expense' ? <Chip label={shared ? t('budget.shared') : t('budget.personal')} icon={shared ? 'Users' : 'User'} selected={shared} onPress={() => setShared((s) => !s)} /> : null}
+              {kind === 'expense' ? (
+                <Chip
+                  label={shared ? t('budget.shared') : t('budget.personal')}
+                  icon={shared ? 'Users' : 'User'}
+                  selected={shared}
+                  onPress={() => setShared((s) => !s)}
+                />
+              ) : null}
             </View>
           ) : null}
-          <Input value={note} onChangeText={setNote} placeholder={t('budget.notePlaceholder')} returnKeyType="done" />
+          <Input
+            value={note}
+            onChangeText={setNote}
+            placeholder={t('budget.notePlaceholder')}
+            returnKeyType="done"
+          />
         </Animated.View>
       ) : null}
 
-      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingHorizontal: theme.spacing[5], paddingVertical: theme.spacing[2] }} keyboardShouldPersistTaps="handled">
+      <ScrollView
+        style={{ flex: 1 }}
+        contentContainerStyle={{ paddingHorizontal: theme.spacing[5], paddingVertical: theme.spacing[2] }}
+        keyboardShouldPersistTaps="handled"
+      >
         {kind === 'expense' ? (
           <View style={styles.grid}>
             {categories.map((c) => {
               const color = theme.chart[c.colorIndex % theme.chart.length] ?? theme.colors.brand;
               return (
-                <PressableScale key={c.id} onPress={() => saveExpense(c.id)} scaleTo={0.92} accessibilityRole="button" accessibilityLabel={categoryLabel(c)} accessibilityState={{ disabled: !canSave }} style={[styles.cell, { opacity: canSave ? 1 : 0.5 }]}>
+                <PressableScale
+                  key={c.id}
+                  onPress={() => saveExpense(c.id)}
+                  scaleTo={0.92}
+                  accessibilityRole="button"
+                  accessibilityLabel={categoryLabel(c)}
+                  accessibilityState={{ disabled: !canSave }}
+                  style={[styles.cell, { opacity: canSave ? 1 : 0.5 }]}
+                >
                   <View style={[styles.iconWrap, { backgroundColor: `${color}1F` }]}>
                     <Icon name={c.icon} color={color} size={26} />
                   </View>
@@ -192,7 +331,15 @@ export default function QuickAddScreen(): React.JSX.Element {
         {kind === 'income' ? (
           <View style={styles.grid}>
             {INCOME_SOURCES.map((s) => (
-              <PressableScale key={s} onPress={() => saveIncome(s)} scaleTo={0.92} accessibilityRole="button" accessibilityLabel={t(`budget.income.sources.${s}`)} accessibilityState={{ disabled: !canSave }} style={[styles.cell, { opacity: canSave ? 1 : 0.5 }]}>
+              <PressableScale
+                key={s}
+                onPress={() => saveIncome(s)}
+                scaleTo={0.92}
+                accessibilityRole="button"
+                accessibilityLabel={t(`budget.income.sources.${s}`)}
+                accessibilityState={{ disabled: !canSave }}
+                style={[styles.cell, { opacity: canSave ? 1 : 0.5 }]}
+              >
                 <View style={[styles.iconWrap, { backgroundColor: `${theme.colors.positive}1F` }]}>
                   <Icon name={INCOME_ICONS[s] ?? 'CircleEllipsis'} color={theme.colors.positive} size={26} />
                 </View>
@@ -220,17 +367,36 @@ export default function QuickAddScreen(): React.JSX.Element {
                 </Text>
                 <View style={styles.chipRow}>
                   {savingsAccounts.map((s) => (
-                    <Chip key={s.id} label={s.name} icon="PiggyBank" selected={toAccountId === `${SAVINGS_PREFIX}${s.id}`} onPress={() => setToAccountId(`${SAVINGS_PREFIX}${s.id}`)} />
+                    <Chip
+                      key={s.id}
+                      label={s.name}
+                      icon="PiggyBank"
+                      selected={toAccountId === `${SAVINGS_PREFIX}${s.id}`}
+                      onPress={() => setToAccountId(`${SAVINGS_PREFIX}${s.id}`)}
+                    />
                   ))}
                 </View>
               </>
             ) : null}
-            <Button label={t('common.save')} onPress={saveTransfer} disabled={!canSave || !accountId || !toAccountId || accountId === toAccountId} style={{ marginTop: theme.spacing[2] }} />
+            <Button
+              label={t('common.save')}
+              onPress={saveTransfer}
+              disabled={!canSave || !accountId || !toAccountId || accountId === toAccountId}
+              style={{ marginTop: theme.spacing[2] }}
+            />
           </View>
         ) : null}
       </ScrollView>
 
-      <View style={{ paddingHorizontal: theme.spacing[5], paddingBottom: insets.bottom + theme.spacing[3], paddingTop: theme.spacing[2], borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: theme.colors.border }}>
+      <View
+        style={{
+          paddingHorizontal: theme.spacing[5],
+          paddingBottom: insets.bottom + theme.spacing[3],
+          paddingTop: theme.spacing[2],
+          borderTopWidth: StyleSheet.hairlineWidth,
+          borderTopColor: theme.colors.border,
+        }}
+      >
         <NumPad value={amountText} onChange={setAmountText} />
       </View>
     </View>

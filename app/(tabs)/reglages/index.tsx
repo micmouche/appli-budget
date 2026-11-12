@@ -12,6 +12,7 @@ import { useTheme } from '@/theme/ThemeProvider';
 import { Card } from '@/ui/Card';
 import { Icon } from '@/ui/Icon';
 import { ListRow } from '@/ui/ListRow';
+import { PageHeader } from '@/ui/PageHeader';
 import { Screen } from '@/ui/Screen';
 import { Text } from '@/ui/Text';
 
@@ -22,7 +23,8 @@ export default function SettingsScreen(): React.JSX.Element {
   const { isPremium } = usePremium();
   const persons = usePersons();
   return (
-    <Screen title={t('settings.title')}>
+    <Screen>
+      <PageHeader back label={t('settings.label')} title={t('settings.title')} />
       <Card
         tone="premium"
         onPress={() => router.push('/(tabs)/reglages/premium')}
@@ -51,7 +53,12 @@ export default function SettingsScreen(): React.JSX.Element {
             onPress={() => router.push({ pathname: '/(tabs)/reglages/profil/[id]', params: { id: p.id } })}
           />
         ))}
-        <ListRow icon="LayoutGrid" title={t('home.customize')} chevron onPress={() => router.push('/(tabs)/reglages/accueil')} />
+        <ListRow
+          icon="LayoutGrid"
+          title={t('home.customize')}
+          chevron
+          onPress={() => router.push('/(tabs)/reglages/accueil')}
+        />
         <ListRow
           icon="Palette"
           title={t('settings.appearance')}
