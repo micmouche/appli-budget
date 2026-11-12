@@ -9,6 +9,8 @@ import type { AppLocale } from '@/i18n';
 import type { SplitMode } from '@/finance/budget';
 import type { ModuleId } from '@/theme/tokens';
 
+import type { Scope } from '@/features/budget/scope';
+
 export type ThemePreference = 'system' | 'light' | 'dark';
 export type HomeCardId = 'topCategory' | 'savings' | 'property' | 'rental' | 'works';
 export const ALL_HOME_CARDS: HomeCardId[] = ['savings', 'topCategory', 'rental', 'works', 'property'];
@@ -26,6 +28,8 @@ export interface SettingsState {
   /** Cartes affichées sur l'accueil (ordre d'affichage). */
   homeCards: HomeCardId[];
   couple: boolean;
+  /** Périmètre affiché : tout, commun ou une personne (`p:<id>`). */
+  scope: Scope;
   splitMode: SplitMode;
   customPctPerson1: number;
   monthStartDay: number;
@@ -58,6 +62,7 @@ const DEFAULTS: SettingsState = {
   modules: ['budget'],
   homeCards: DEFAULT_HOME_CARDS,
   couple: false,
+  scope: 'all',
   splitMode: 'prorata',
   customPctPerson1: 50,
   monthStartDay: 1,

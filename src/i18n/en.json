@@ -274,6 +274,17 @@
       "thisMonth": "This month",
       "threeMonths": "3 months",
       "allTime": "All time"
+    },
+    "scope": {
+      "all": "All",
+      "shared": "Shared",
+      "mine": "Personal",
+      "contributions": "Contributions",
+      "contributionsOut": "Paid to shared",
+      "resources": "Resources",
+      "sharedOnly": "Shared finances",
+      "personalOf": "{{name}}'s finances",
+      "everything": "Whole household"
     }
   },
   "categories": {

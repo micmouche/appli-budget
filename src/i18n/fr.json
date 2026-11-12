@@ -274,6 +274,17 @@
       "thisMonth": "Ce mois",
       "threeMonths": "3 mois",
       "allTime": "Tout"
+    },
+    "scope": {
+      "all": "Tout",
+      "shared": "Commun",
+      "mine": "Perso",
+      "contributions": "Apports",
+      "contributionsOut": "Versé au commun",
+      "resources": "Ressources",
+      "sharedOnly": "Finances communes",
+      "personalOf": "Finances de {{name}}",
+      "everything": "Tout le foyer"
     }
   },
   "categories": {
