@@ -331,7 +331,28 @@
     "noEnvelope": "Pas d'enveloppe définie pour cette catégorie",
     "sort": "Trier",
     "sortDate": "Par date",
-    "sortAmount": "Par montant"
+    "sortAmount": "Par montant",
+    "analysis": {
+      "title": "Analyses",
+      "periods": {
+        "1": "Ce mois-ci",
+        "6": "6 derniers mois",
+        "12": "12 derniers mois",
+        "all": "Depuis le début"
+      },
+      "month": "Mois",
+      "six": "6 mois",
+      "twelve": "12 mois",
+      "all": "Tout",
+      "synopsis": "Synthèse des dépenses",
+      "totalSpent": "Dépenses totales",
+      "vsPrevious": "vs mois dernier ({{amount}})",
+      "average": "Moyenne mensuelle : {{amount}}",
+      "top": "Top des dépenses",
+      "perMonth": "{{amount}} par mois",
+      "manage": "Gérer",
+      "noRecurring": "Aucune dépense récurrente"
+    }
   },
   "categories": {
     "housing": "Logement",

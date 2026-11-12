@@ -331,7 +331,28 @@
     "noEnvelope": "No envelope set for this category",
     "sort": "Sort",
     "sortDate": "By date",
-    "sortAmount": "By amount"
+    "sortAmount": "By amount",
+    "analysis": {
+      "title": "Analysis",
+      "periods": {
+        "1": "This month",
+        "6": "Last 6 months",
+        "12": "Last 12 months",
+        "all": "All time"
+      },
+      "month": "Month",
+      "six": "6 months",
+      "twelve": "12 months",
+      "all": "All",
+      "synopsis": "Spending synopsis",
+      "totalSpent": "Total spending",
+      "vsPrevious": "vs last month ({{amount}})",
+      "average": "Monthly average: {{amount}}",
+      "top": "Top expenses",
+      "perMonth": "{{amount}} per month",
+      "manage": "Manage",
+      "noRecurring": "No recurring expense"
+    }
   },
   "categories": {
     "housing": "Housing",
