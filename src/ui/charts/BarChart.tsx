@@ -4,7 +4,7 @@
  */
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import { useFont } from '@shopify/react-native-skia';
+import { LinearGradient, useFont, vec } from '@shopify/react-native-skia';
 import { Bar, CartesianChart } from 'victory-native';
 
 import type { Cents } from '@/finance/money';
@@ -27,6 +27,10 @@ export interface BarChartProps {
   selectedKey?: string;
   onSelect?: (key: string) => void;
   accessibilitySummary?: string;
+  /** Couleur des barres (défaut : brand). */
+  color?: string;
+  /** Dégradé vertical plein → transparent (style référence). */
+  gradient?: boolean;
 }
 
 export function BarChart({
@@ -34,6 +38,8 @@ export function BarChart({
   height = 160,
   selectedKey,
   accessibilitySummary,
+  color: barColor,
+  gradient = false,
 }: BarChartProps): React.JSX.Element {
   const theme = useTheme();
   const font = useFont(interRegular, 11);
@@ -73,7 +79,8 @@ export function BarChart({
           <>
             {points.y.map((p, i) => {
               const key = data[i]?.key;
-              const color = key === selectedKey ? theme.colors.brand : `${theme.colors.brand}80`;
+              const base = barColor ?? theme.colors.brand;
+              const color = gradient || key === selectedKey || !selectedKey ? base : `${base}80`;
               return (
                 <Bar
                   key={key ?? i}
@@ -81,10 +88,14 @@ export function BarChart({
                   chartBounds={chartBounds}
                   barCount={rows.length}
                   innerPadding={0.45}
-                  roundedCorners={{ topLeft: 4, topRight: 4 }}
+                  roundedCorners={{ topLeft: 6, topRight: 6 }}
                   color={color}
                   animate={{ type: 'timing', duration: 400 }}
-                />
+                >
+                  {gradient ? (
+                    <LinearGradient start={vec(0, chartBounds.top)} end={vec(0, chartBounds.bottom)} colors={[base, `${base}1A`]} />
+                  ) : null}
+                </Bar>
               );
             })}
           </>

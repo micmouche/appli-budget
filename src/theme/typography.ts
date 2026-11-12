@@ -25,10 +25,10 @@ export type TypeStyle =
   | 'micro';
 
 export const typeScale: Record<TypeStyle, TextStyle> = {
-  hero: { fontFamily: fontFamilies.display, fontSize: 44, lineHeight: 50, letterSpacing: -1.5 },
+  hero: { fontFamily: fontFamilies.display, fontSize: 56, lineHeight: 62, letterSpacing: -2 },
   display: { fontFamily: fontFamilies.display, fontSize: 34, lineHeight: 40, letterSpacing: -1 },
-  title1: { fontFamily: fontFamilies.display, fontSize: 24, lineHeight: 30, letterSpacing: -0.4 },
-  title2: { fontFamily: fontFamilies.displaySemi, fontSize: 19, lineHeight: 24, letterSpacing: -0.2 },
+  title1: { fontFamily: fontFamilies.display, fontSize: 30, lineHeight: 36, letterSpacing: -0.8 },
+  title2: { fontFamily: fontFamilies.displaySemi, fontSize: 22, lineHeight: 28, letterSpacing: -0.4 },
   headline: { fontFamily: fontFamilies.bodySemi, fontSize: 15, lineHeight: 20 },
   body: { fontFamily: fontFamilies.body, fontSize: 15, lineHeight: 22 },
   callout: { fontFamily: fontFamilies.bodyMedium, fontSize: 14, lineHeight: 19 },

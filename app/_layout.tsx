@@ -77,6 +77,7 @@ function Root(): React.JSX.Element {
           options={{ presentation: 'modal', animation: 'slide_from_bottom', gestureEnabled: true }}
         />
         <Stack.Screen name="paywall" options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
+        <Stack.Screen name="alertes" options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
       </Stack>
       <ToastHost />
       {hydrated ? <LockGate /> : null}

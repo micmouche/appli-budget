@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { Platform } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { TabBar, type TabBarProps } from '@/core/TabBar';
 import { useTheme } from '@/theme/ThemeProvider';
 import { fontFamilies } from '@/theme/typography';
 import { Icon } from '@/ui/Icon';
@@ -32,6 +33,7 @@ export default function TabsLayout(): React.JSX.Element {
   );
   return (
     <Tabs
+      tabBar={(props) => <TabBar {...(props as unknown as TabBarProps)} />}
       screenOptions={{
         headerShown: false,
         tabBarActiveTintColor: theme.colors.brand,

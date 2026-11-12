@@ -34,7 +34,9 @@
     "me": "Me",
     "month": "Month",
     "year": "Year",
-    "search": "Search"
+    "search": "Search",
+    "menu": "Menu",
+    "notifications": "Notifications ({{count}})"
   },
   "tabs": {
     "home": "Home",
@@ -84,7 +86,7 @@
     "works": "Ongoing works",
     "lastScenario": "Latest property scenario",
     "alerts": "Alerts",
-    "noAlerts": "All good",
+    "noAlerts": "Nothing to report, all good",
     "lastExport": "Last export: {{when}}",
     "neverExported": "Never exported",
     "exportNow": "Export",
@@ -128,7 +130,19 @@
       "noBudget": "Enter your income to track what is left to spend",
       "noBudgetBody": "In Budget › Household, enter the household monthly income."
     },
-    "noRecent": "No transaction this month"
+    "noRecent": "No transaction this month",
+    "alertsLabel": "To watch",
+    "alertsTitle": "Notifications",
+    "monthToMonth": "Month to month",
+    "spending": "Spending",
+    "spendingAnalysis": "Spending analysis »",
+    "transactionsFor": "Transactions for",
+    "addExpense": "Add expense",
+    "editBudget": "Edit budget",
+    "availableOutOf": "available out of {{total}}",
+    "savingsLabel": "Savings",
+    "fixedLabel": "Fixed charges",
+    "goalsLabel": "Goals"
   },
   "alerts": {
     "envelopeWarning": "{{category}}: {{pct}}% of envelope used",

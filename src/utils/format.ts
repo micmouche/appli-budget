@@ -104,3 +104,11 @@ export function centsAccessibilityLabel(cents: Cents): string {
   const unit = i18n.language === 'en' ? 'euros' : 'euros';
   return c === 0 ? `${sign}${euros} ${unit}` : `${sign}${euros} ${unit} ${c}`;
 }
+
+/** « 1 855,50 € » → { main: '1 855', rest: ',50 €' } pour les grands montants (décimales en petit). */
+export function splitEuros(cents: Cents, options: { currency?: string } = {}): { main: string; rest: string } {
+  const text = formatCents(cents, options);
+  const i = text.search(/[,.]\d{2}/);
+  if (i < 0) return { main: text, rest: '' };
+  return { main: text.slice(0, i), rest: text.slice(i) };
+}

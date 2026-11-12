@@ -15,7 +15,6 @@ import { useTheme } from '@/theme/ThemeProvider';
 import { Amount } from '@/ui/Amount';
 import { Card } from '@/ui/Card';
 import { EmptyState } from '@/ui/EmptyState';
-import { Fab } from '@/ui/Fab';
 import { IconButton } from '@/ui/IconButton';
 import { ListRow } from '@/ui/ListRow';
 import { MonthSwitcher } from '@/ui/MonthSwitcher';
@@ -361,7 +360,6 @@ export default function BudgetScreen(): React.JSX.Element {
           ))
         )}
       </Screen>
-      <Fab onPress={() => router.push('/saisie-rapide')} accessibilityLabel={t('home.quickAdd')} />
     </View>
   );
 }

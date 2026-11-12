@@ -34,7 +34,9 @@
     "me": "Moi",
     "month": "Mois",
     "year": "Année",
-    "search": "Rechercher"
+    "search": "Rechercher",
+    "menu": "Menu",
+    "notifications": "Notifications ({{count}})"
   },
   "tabs": {
     "home": "Accueil",
@@ -84,7 +86,7 @@
     "works": "Chantier en cours",
     "lastScenario": "Dernier scénario immo",
     "alerts": "Alertes",
-    "noAlerts": "Tout est en ordre",
+    "noAlerts": "Rien à signaler, tout est en ordre",
     "lastExport": "Dernier export : {{when}}",
     "neverExported": "Jamais exporté",
     "exportNow": "Exporter",
@@ -128,7 +130,19 @@
       "noBudget": "Indiquez vos revenus pour suivre votre reste à dépenser",
       "noBudgetBody": "Dans Budget › Foyer, renseignez les revenus mensuels du foyer."
     },
-    "noRecent": "Aucune opération ce mois-ci"
+    "noRecent": "Aucune opération ce mois-ci",
+    "alertsLabel": "À surveiller",
+    "alertsTitle": "Notifications",
+    "monthToMonth": "Mois par mois",
+    "spending": "Dépenses",
+    "spendingAnalysis": "Analyse des dépenses »",
+    "transactionsFor": "Opérations de",
+    "addExpense": "Ajouter une dépense",
+    "editBudget": "Modifier le budget",
+    "availableOutOf": "disponibles sur {{total}}",
+    "savingsLabel": "Épargne",
+    "fixedLabel": "Charges fixes",
+    "goalsLabel": "Objectifs"
   },
   "alerts": {
     "envelopeWarning": "{{category}} : {{pct}} % de l'enveloppe utilisés",

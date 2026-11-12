@@ -29,22 +29,26 @@ export interface ColorTokens {
   /** Lavande (accent tertiaire). */
   lavender: string;
   lavenderSoft: string;
+  /** Vert très foncé : barre de navigation basse, grands titres. */
+  navBar: string;
+  /** Rose des barres de graphique (référence visuelle). */
+  chartAccent: string;
   premium: string;
   premiumBg: string;
   overlay: string;
 }
 
 export const lightColors: ColorTokens = {
-  bg: '#F8F7F3',
+  bg: '#F6F5EF',
   surface: '#FFFFFF',
-  surface2: '#EFEDE6',
+  surface2: '#E6EEEA',
   border: '#E6E3DB',
-  text: '#202A28',
+  text: '#1E3A34',
   textSecondary: '#5F6A67',
   textMuted: '#8C9490',
-  brand: '#176B58',
+  brand: '#1E7B5E',
   onBrand: '#FFFFFF',
-  brandSoft: '#E3F0EB',
+  brandSoft: '#E4EEEA',
   positive: '#176B58',
   positiveFill: '#1F8A6A',
   negative: '#C8403A',
@@ -55,6 +59,8 @@ export const lightColors: ColorTokens = {
   accentSoft: '#FBE9DF',
   lavender: '#7764D8',
   lavenderSoft: '#ECE8FB',
+  navBar: '#1D463C',
+  chartAccent: '#E0245E',
   premium: '#8A6A1E',
   premiumBg: '#F5ECD3',
   overlay: 'rgba(23, 25, 29, 0.45)',
@@ -81,6 +87,8 @@ export const darkColors: ColorTokens = {
   accentSoft: '#3A271D',
   lavender: '#A394F0',
   lavenderSoft: '#272342',
+  navBar: '#0B1F1A',
+  chartAccent: '#F0567F',
   premium: '#E8C66B',
   premiumBg: '#2E2714',
   overlay: 'rgba(0, 0, 0, 0.6)',
