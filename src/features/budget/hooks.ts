@@ -23,6 +23,7 @@ import {
 import type { Account, Category, Expense, Person } from '@/db/schema';
 
 import { accountBalance } from './accounts';
+import { accountInScope, expenseInScope, scopePersonId, scopeResources, scopeTotals, type Scope } from './scope';
 import { useSettings } from '@/store/settings';
 
 export interface CategoryTotal {
@@ -38,12 +39,16 @@ export function useCurrentMonthKey(): string {
   return useMemo(() => currentMonthKey(monthStartDay), [monthStartDay]);
 }
 
-export function useBudgetMonth(monthKey: string) {
+export function useBudgetMonth(monthKey: string, scopeOverride?: Scope) {
   const monthStartDay = useSettings((s) => s.monthStartDay);
+  const settingsScope = useSettings((s) => s.scope);
+  const couple = useSettings((s) => s.couple);
+  const scope: Scope = couple ? (scopeOverride ?? settingsScope) : 'all';
+  const accountRows = useQuery(() => listAccounts(), []);
   const splitMode = useSettings((s) => s.splitMode);
   const customPctPerson1 = useSettings((s) => s.customPctPerson1);
 
-  const expenses = useQuery(() => listExpensesForMonth(monthKey, monthStartDay), [monthKey, monthStartDay]);
+  const allExpenses = useQuery(() => listExpensesForMonth(monthKey, monthStartDay), [monthKey, monthStartDay]);
   const categories = useQuery(() => listCategories(), []);
   const persons = useQuery(() => listPersons(), []);
   const settlementRecord = useQuery(() => getSettlementForMonth(monthKey), [monthKey]);
@@ -53,12 +58,18 @@ export function useBudgetMonth(monthKey: string) {
   );
 
   return useMemo(() => {
+    const expenses = allExpenses.filter((e) => expenseInScope(e, scope));
     const totalCents = expenses.reduce((a, e) => a + e.amountCents, 0);
-    const incomes = transactions.filter((t) => t.kind === 'income');
-    const recordedIncomeCents = incomes.reduce((a, t) => a + t.amountCents, 0);
-    const expectedIncomeCents = persons.reduce((a, p) => a + p.monthlyIncomeCents, 0);
-    /** Revenus du mois : encaissés s'il y en a, sinon revenus déclarés du foyer. */
-    const incomeCents = recordedIncomeCents > 0 ? recordedIncomeCents : expectedIncomeCents;
+    const totals = scopeTotals(transactions, scope, accountRows);
+    const anyRecorded = transactions.some((t) => t.kind === 'income' || t.kind === 'transfer');
+    const scopePerson = scopePersonId(scope);
+    /** Revenus déclarés : foyer entier, une personne, ou rien pour le commun. */
+    const expectedIncomeCents =
+      scope === 'shared'
+        ? 0
+        : persons.filter((p) => !scopePerson || p.id === scopePerson).reduce((a, p) => a + p.monthlyIncomeCents, 0);
+    /** Ressources du mois : encaissées + apports s'il y a des opérations, sinon revenus déclarés. */
+    const incomeCents = anyRecorded ? scopeResources(totals) : expectedIncomeCents;
     const byCategory = new Map<string, { totalCents: number; count: number }>();
     for (const e of expenses) {
       const cur = byCategory.get(e.categoryId) ?? { totalCents: 0, count: 0 };
@@ -84,11 +95,15 @@ export function useBudgetMonth(monthKey: string) {
     }));
     const settlement = computeSettlement(
       financePersons,
-      expenses.map((e) => ({ amountCents: e.amountCents, paidById: e.paidById ?? '', shared: e.shared })),
+      allExpenses.map((e) => ({ amountCents: e.amountCents, paidById: e.paidById ?? '', shared: e.shared })),
       { mode: splitMode, customPctPerson1 },
     );
     return {
+      scope,
       expenses,
+      allExpenses,
+      transactions,
+      scopeTotals: totals,
       categories,
       persons,
       totalCents,
@@ -98,7 +113,7 @@ export function useBudgetMonth(monthKey: string) {
       settlement,
       settlementRecord,
     };
-  }, [expenses, transactions, categories, persons, splitMode, customPctPerson1, settlementRecord]);
+  }, [allExpenses, transactions, accountRows, scope, categories, persons, splitMode, customPctPerson1, settlementRecord]);
 }
 
 export function useMonthlyTotals(lastMonthKey: string, months: number) {
@@ -133,7 +148,7 @@ export interface AccountView {
 }
 
 /** Comptes du quotidien avec leur solde courant. */
-export function useAccounts(): {
+export function useAccounts(scope: Scope = 'all'): {
   accounts: AccountView[];
   totalCents: number;
   defaultAccount: Account | undefined;
@@ -141,7 +156,9 @@ export function useAccounts(): {
   const rows = useQuery(() => listAccounts(), []);
   const txs = useQuery(() => listAllTransactions(), []);
   return useMemo(() => {
-    const accounts = rows.map((account) => ({
+    const accounts = rows
+      .filter((a) => accountInScope(a, scope))
+      .map((account) => ({
       account,
       balanceCents: accountBalance(account.id, account.initialBalanceCents, txs),
     }));
@@ -150,5 +167,12 @@ export function useAccounts(): {
       totalCents: accounts.reduce((a, v) => a + v.balanceCents, 0),
       defaultAccount: rows.find((a) => a.isDefault) ?? rows[0],
     };
-  }, [rows, txs]);
+  }, [rows, txs, scope]);
+}
+
+/** Périmètre courant (toujours « tout » hors mode couple). */
+export function useScope(): Scope {
+  const couple = useSettings((s) => s.couple);
+  const scope = useSettings((s) => s.scope);
+  return couple ? scope : 'all';
 }

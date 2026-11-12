@@ -107,7 +107,28 @@
       "property": "Dernier scénario immobilier",
       "rental": "Loyers du mois",
       "works": "Chantier en cours"
-    }
+    },
+    "outOf": "sur {{total}} de budget",
+    "envelopes": "Enveloppes",
+    "seeBudget": "Voir le budget",
+    "recent": "Dernières opérations",
+    "seeAll": "Tout voir",
+    "fixedCharges": "Charges fixes",
+    "goalsAvg": "{{pct}} en moyenne",
+    "noGoals": "Aucun objectif",
+    "perMonth": "par mois",
+    "insight": {
+      "title": "Conseil du moment",
+      "fast": "Vous dépensez plus vite que le mois n'avance",
+      "fastBody": "{{spent}} déjà dépensés à {{elapsed}} du mois. Un œil sur {{category}} ?",
+      "good": "Bon rythme ce mois-ci",
+      "goodBody": "{{remaining}} restants pour {{days}} jours, soit environ {{perDay}} par jour.",
+      "empty": "Commencez par ajouter une dépense",
+      "emptyBody": "Le bouton + en bas à droite enregistre une dépense en deux tapes.",
+      "noBudget": "Indiquez vos revenus pour suivre votre reste à dépenser",
+      "noBudgetBody": "Dans Budget › Foyer, renseignez les revenus mensuels du foyer."
+    },
+    "noRecent": "Aucune opération ce mois-ci"
   },
   "alerts": {
     "envelopeWarning": "{{category}} : {{pct}} % de l'enveloppe utilisés",

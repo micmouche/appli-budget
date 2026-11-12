@@ -23,28 +23,38 @@ export interface ColorTokens {
   warning: string;
   warningFill: string;
   info: string;
+  /** Orange chaleureux (accent secondaire). */
+  accent: string;
+  accentSoft: string;
+  /** Lavande (accent tertiaire). */
+  lavender: string;
+  lavenderSoft: string;
   premium: string;
   premiumBg: string;
   overlay: string;
 }
 
 export const lightColors: ColorTokens = {
-  bg: '#F6F5F1',
+  bg: '#F8F7F3',
   surface: '#FFFFFF',
-  surface2: '#EFEDE7',
-  border: '#E3E1DA',
-  text: '#17191D',
-  textSecondary: '#5E6470',
-  textMuted: '#8B9098',
-  brand: '#1E5A48',
+  surface2: '#EFEDE6',
+  border: '#E6E3DB',
+  text: '#202A28',
+  textSecondary: '#5F6A67',
+  textMuted: '#8C9490',
+  brand: '#176B58',
   onBrand: '#FFFFFF',
-  brandSoft: '#E3EFEA',
-  positive: '#187A4F',
-  positiveFill: '#1F8A5B',
+  brandSoft: '#E3F0EB',
+  positive: '#176B58',
+  positiveFill: '#1F8A6A',
   negative: '#C8403A',
   warning: '#96620A',
-  warningFill: '#D8A118',
+  warningFill: '#E6A23C',
   info: '#2F6BBF',
+  accent: '#E67B45',
+  accentSoft: '#FBE9DF',
+  lavender: '#7764D8',
+  lavenderSoft: '#ECE8FB',
   premium: '#8A6A1E',
   premiumBg: '#F5ECD3',
   overlay: 'rgba(23, 25, 29, 0.45)',
@@ -67,6 +77,10 @@ export const darkColors: ColorTokens = {
   warning: '#E0A93A',
   warningFill: '#E0A93A',
   info: '#6FA3EE',
+  accent: '#F09A6C',
+  accentSoft: '#3A271D',
+  lavender: '#A394F0',
+  lavenderSoft: '#272342',
   premium: '#E8C66B',
   premiumBg: '#2E2714',
   overlay: 'rgba(0, 0, 0, 0.6)',
@@ -105,9 +119,9 @@ export const spacing = {
 } as const;
 
 export const radius = {
-  sm: 10,
-  md: 16,
-  lg: 24,
+  sm: 12,
+  md: 18,
+  lg: 26,
   full: 999,
 } as const;
 

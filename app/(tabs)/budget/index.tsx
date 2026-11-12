@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 
 import { AccountsStrip } from '@/features/budget/AccountsStrip';
+import { ScopeSelector } from '@/features/budget/ScopeSelector';
 import { ExpenseRow } from '@/features/budget/ExpenseRow';
 import { exportMonthCsv, exportMonthPdf } from '@/features/budget/export';
 import { personName, useBudgetMonth, useCurrentMonthKey } from '@/features/budget/hooks';
@@ -127,6 +128,11 @@ export default function BudgetScreen(): React.JSX.Element {
           canGoForward={monthKey < currentKey}
         />
 
+        {couple ? (
+          <View style={{ marginTop: theme.spacing[3] }}>
+            <ScopeSelector persons={month.persons} />
+          </View>
+        ) : null}
         <View style={{ marginTop: theme.spacing[3] }}>
           <AccountsStrip />
         </View>

@@ -107,7 +107,28 @@
       "property": "Latest property scenario",
       "rental": "This month's rents",
       "works": "Ongoing works"
-    }
+    },
+    "outOf": "of {{total}} budget",
+    "envelopes": "Envelopes",
+    "seeBudget": "See budget",
+    "recent": "Latest transactions",
+    "seeAll": "See all",
+    "fixedCharges": "Fixed charges",
+    "goalsAvg": "{{pct}} on average",
+    "noGoals": "No goal yet",
+    "perMonth": "per month",
+    "insight": {
+      "title": "Tip of the moment",
+      "fast": "You are spending faster than the month goes",
+      "fastBody": "{{spent}} already spent at {{elapsed}} of the month. Keep an eye on {{category}}?",
+      "good": "Good pace this month",
+      "goodBody": "{{remaining}} left for {{days}} days, about {{perDay}} per day.",
+      "empty": "Start by adding an expense",
+      "emptyBody": "The + button at the bottom right records an expense in two taps.",
+      "noBudget": "Enter your income to track what is left to spend",
+      "noBudgetBody": "In Budget › Household, enter the household monthly income."
+    },
+    "noRecent": "No transaction this month"
   },
   "alerts": {
     "envelopeWarning": "{{category}}: {{pct}}% of envelope used",
