@@ -352,7 +352,16 @@
       "perMonth": "{{amount}} par mois",
       "manage": "Gérer",
       "noRecurring": "Aucune dépense récurrente"
-    }
+    },
+    "subscriptionPick": "Quel abonnement ?",
+    "subscriptionCustom": "Autre nom…",
+    "repeatMonthly": "Chaque mois",
+    "repeatMonthlyHint": "Ajouté automatiquement les mois suivants",
+    "whoPaid": "Qui a payé ?",
+    "subscriptionsTitle": "Abonnements",
+    "subscriptionsLabel": "{{amount}} par mois",
+    "noSubscriptions": "Aucun abonnement enregistré",
+    "recurringCreated": "Répété chaque mois à partir du {{date}}"
   },
   "categories": {
     "housing": "Logement",
@@ -593,7 +602,9 @@
     "rate": "Noter l'application",
     "licenses": "Licences open source",
     "redoOnboarding": "Relancer l'onboarding",
-    "label": "Profil et préférences"
+    "label": "Profil et préférences",
+    "sound": "Son à la validation",
+    "soundHint": "Tintement lors de l'ajout d'une dépense"
   },
   "lock": {
     "title": "Pécule est verrouillé",

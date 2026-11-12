@@ -8,15 +8,20 @@ import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import Animated, { FadeIn, FadeOut, Layout } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { subDays } from 'date-fns';
+import { addMonths, subDays } from 'date-fns';
+import { Avatar } from '@/ui/avatar/Avatar';
 
 import {
   categoryLabel,
   createExpense,
+  createRecurring,
   createSavingsMovement,
   deleteExpense,
+  deleteRecurring,
   listSavingsAccounts,
 } from '@/db/repositories';
+import { SUBSCRIPTION_PRESETS } from '@/features/budget/subscriptions';
+import { playCash } from '@/utils/sound';
 import { INCOME_SOURCES, type TransactionKind } from '@/db/schema';
 import { useQuery } from '@/db/useQuery';
 import { SAVINGS_PREFIX } from '@/features/budget/accounts';
@@ -70,39 +75,67 @@ export default function QuickAddScreen(): React.JSX.Element {
   const [note, setNote] = useState('');
   const [accountId, setAccountId] = useState<string | null>(defaultAccount?.id ?? null);
   const [toAccountId, setToAccountId] = useState<string | null>(null);
+  const [repeat, setRepeat] = useState(false);
+  const [subscriptionFor, setSubscriptionFor] = useState<string | null>(null);
+  const [customSub, setCustomSub] = useState('');
 
   const amountCents = useMemo(() => parseEurosInput(amountText), [amountText]);
   const canSave = amountCents !== null && amountCents > 0;
   const fallbackCategoryId =
     categories.find((c) => c.id === OTHER_CATEGORY_ID)?.id ?? categories[0]?.id ?? OTHER_CATEGORY_ID;
 
-  const finish = (message: string, createdId: string): void => {
+  const finish = (message: string, createdId: string, recurringId?: string): void => {
     haptics.success();
-    showToast(message, { actionLabel: t('common.undo'), onAction: () => deleteExpense(createdId) });
+    playCash();
+    showToast(message, {
+      actionLabel: t('common.undo'),
+      onAction: () => {
+        deleteExpense(createdId);
+        if (recurringId) deleteRecurring(recurringId);
+      },
+    });
     router.back();
   };
 
-  const saveExpense = (categoryId: string): void => {
+  const saveExpense = (categoryId: string, label?: string): void => {
     if (!canSave || amountCents === null) {
       haptics.error();
       return;
     }
     const category = categories.find((c) => c.id === categoryId);
+    // Abonnements : on demande d'abord la nature (Netflix, box…), sauf si déjà choisie.
+    if (categoryId === 'cat_subscriptions' && label === undefined) {
+      setSubscriptionFor(categoryId);
+      setRepeat(true);
+      return;
+    }
+    const finalNote = label ? (note ? `${label} · ${note}` : label) : note;
     const created = createExpense({
       amountCents,
       categoryId,
       date: toIsoDate(date),
       paidById,
       shared,
-      note,
+      note: finalNote,
       accountId,
     });
+    let recurringId: string | undefined;
+    if (repeat) {
+      const rec = createRecurring({
+        amountCents,
+        categoryId,
+        paidById,
+        shared,
+        note: finalNote,
+        frequency: 'monthly',
+        nextDate: toIsoDate(addMonths(date, 1)),
+      });
+      recurringId = rec.id;
+    }
     finish(
-      t('budget.expenseAdded', {
-        category: category ? categoryLabel(category) : '',
-        amount: formatCents(amountCents),
-      }),
+      `${t('budget.expenseAdded', { category: label ?? (category ? categoryLabel(category) : ''), amount: formatCents(amountCents) })}${repeat ? ` · ${t('budget.repeatMonthly')}` : ''}`,
       created.id,
+      recurringId,
     );
   };
 
@@ -250,6 +283,75 @@ export default function QuickAddScreen(): React.JSX.Element {
         </Text>
       </View>
 
+      {kind === 'expense' ? (
+        <View
+          style={{
+            paddingHorizontal: theme.spacing[5],
+            gap: theme.spacing[2],
+            paddingBottom: theme.spacing[2],
+          }}
+        >
+          <View style={styles.chipRow}>
+            {couple ? (
+              <>
+                <Chip
+                  label={t('budget.shared')}
+                  icon="Users"
+                  selected={shared}
+                  onPress={() => setShared(true)}
+                />
+                <Chip
+                  label={t('budget.personal')}
+                  icon="User"
+                  selected={!shared}
+                  onPress={() => setShared(false)}
+                />
+              </>
+            ) : null}
+            <Chip
+              label={t('budget.repeatMonthly')}
+              icon="Repeat"
+              selected={repeat}
+              onPress={() => setRepeat((r) => !r)}
+            />
+          </View>
+          {couple ? (
+            <View style={[styles.chipRow, { alignItems: 'center' }]}>
+              <Text variant="caption" color="textSecondary">
+                {t('budget.whoPaid')}
+              </Text>
+              {persons.map((p) => (
+                <PressableScale
+                  key={p.id}
+                  onPress={() => setPaidById(p.id)}
+                  haptic="selection"
+                  accessibilityRole="radio"
+                  accessibilityState={{ selected: paidById === p.id }}
+                  accessibilityLabel={p.name}
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    gap: 6,
+                    paddingLeft: 4,
+                    paddingRight: 12,
+                    height: 36,
+                    borderRadius: 999,
+                    borderWidth: 1.5,
+                    borderColor: paidById === p.id ? theme.colors.brand : theme.colors.border,
+                    backgroundColor: paidById === p.id ? theme.colors.brandSoft : theme.colors.surface,
+                  }}
+                >
+                  <Avatar person={p} size={26} />
+                  <Text variant="callout" color={paidById === p.id ? 'brand' : 'textSecondary'}>
+                    {p.name}
+                  </Text>
+                </PressableScale>
+              ))}
+            </View>
+          ) : null}
+        </View>
+      ) : null}
+
       {more ? (
         <Animated.View
           entering={FadeIn.duration(200)}
@@ -268,7 +370,7 @@ export default function QuickAddScreen(): React.JSX.Element {
             ))}
           </View>
           {kind !== 'transfer' && accounts.length > 1 ? accountChips(accountId, setAccountId) : null}
-          {couple ? (
+          {couple && kind !== 'expense' ? (
             <View style={styles.chipRow}>
               {persons.map((p) => (
                 <Chip
@@ -279,14 +381,6 @@ export default function QuickAddScreen(): React.JSX.Element {
                   onPress={() => setPaidById(p.id)}
                 />
               ))}
-              {kind === 'expense' ? (
-                <Chip
-                  label={shared ? t('budget.shared') : t('budget.personal')}
-                  icon={shared ? 'Users' : 'User'}
-                  selected={shared}
-                  onPress={() => setShared((s) => !s)}
-                />
-              ) : null}
             </View>
           ) : null}
           <Input
@@ -303,7 +397,58 @@ export default function QuickAddScreen(): React.JSX.Element {
         contentContainerStyle={{ paddingHorizontal: theme.spacing[5], paddingVertical: theme.spacing[2] }}
         keyboardShouldPersistTaps="handled"
       >
-        {kind === 'expense' ? (
+        {kind === 'expense' && subscriptionFor ? (
+          <View style={{ gap: theme.spacing[3] }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+              <Text variant="title2">{t('budget.subscriptionPick')}</Text>
+              <IconButton
+                name="X"
+                color="textSecondary"
+                accessibilityLabel={t('common.cancel')}
+                onPress={() => setSubscriptionFor(null)}
+              />
+            </View>
+            <Text variant="caption" color="textSecondary">
+              {repeat ? t('budget.repeatMonthlyHint') : ''}
+            </Text>
+            <View style={styles.grid}>
+              {SUBSCRIPTION_PRESETS.map((sp) => (
+                <PressableScale
+                  key={sp.id}
+                  onPress={() =>
+                    sp.id === 'other'
+                      ? saveExpense(subscriptionFor, customSub.trim() || sp.label)
+                      : saveExpense(subscriptionFor, sp.label)
+                  }
+                  scaleTo={0.92}
+                  accessibilityRole="button"
+                  accessibilityLabel={sp.label}
+                  style={styles.cell}
+                >
+                  <View
+                    style={[
+                      styles.iconWrap,
+                      { backgroundColor: `${theme.chart[5] ?? theme.colors.brand}1F` },
+                    ]}
+                  >
+                    <Icon name={sp.icon} color={theme.chart[5] ?? theme.colors.brand} size={26} />
+                  </View>
+                  <Text variant="caption" align="center" numberOfLines={1}>
+                    {sp.label}
+                  </Text>
+                </PressableScale>
+              ))}
+            </View>
+            <Input
+              value={customSub}
+              onChangeText={setCustomSub}
+              placeholder={t('budget.subscriptionCustom')}
+              returnKeyType="done"
+              onSubmitEditing={() => customSub.trim() && saveExpense(subscriptionFor, customSub.trim())}
+            />
+          </View>
+        ) : null}
+        {kind === 'expense' && !subscriptionFor ? (
           <View style={styles.grid}>
             {categories.map((c) => {
               const color = theme.chart[c.colorIndex % theme.chart.length] ?? theme.colors.brand;

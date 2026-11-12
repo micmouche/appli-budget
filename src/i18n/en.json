@@ -352,7 +352,16 @@
       "perMonth": "{{amount}} per month",
       "manage": "Manage",
       "noRecurring": "No recurring expense"
-    }
+    },
+    "subscriptionPick": "Which subscription?",
+    "subscriptionCustom": "Other name…",
+    "repeatMonthly": "Every month",
+    "repeatMonthlyHint": "Added automatically next months",
+    "whoPaid": "Who paid?",
+    "subscriptionsTitle": "Subscriptions",
+    "subscriptionsLabel": "{{amount}} per month",
+    "noSubscriptions": "No subscription recorded",
+    "recurringCreated": "Repeated monthly from {{date}}"
   },
   "categories": {
     "housing": "Housing",
@@ -593,7 +602,9 @@
     "rate": "Rate the app",
     "licenses": "Open source licenses",
     "redoOnboarding": "Restart onboarding",
-    "label": "Profile and preferences"
+    "label": "Profile and preferences",
+    "sound": "Sound on confirm",
+    "soundHint": "Chime when adding an expense"
   },
   "lock": {
     "title": "Pécule is locked",

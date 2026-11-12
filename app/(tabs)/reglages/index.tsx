@@ -2,12 +2,13 @@
 import React from 'react';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { View } from 'react-native';
+import { Switch, View } from 'react-native';
 import Constants from 'expo-constants';
 
 import { usePremium } from '@/purchases';
 import { usePersons } from '@/features/budget/hooks';
 import { Avatar } from '@/ui/avatar/Avatar';
+import { useSettings } from '@/store/settings';
 import { useTheme } from '@/theme/ThemeProvider';
 import { Card } from '@/ui/Card';
 import { Icon } from '@/ui/Icon';
@@ -22,6 +23,8 @@ export default function SettingsScreen(): React.JSX.Element {
   const theme = useTheme();
   const { isPremium } = usePremium();
   const persons = usePersons();
+  const soundEnabled = useSettings((s) => s.soundEnabled);
+  const setSetting = useSettings((s) => s.set);
   return (
     <Screen>
       <PageHeader back label={t('settings.label')} title={t('settings.title')} />
@@ -58,6 +61,12 @@ export default function SettingsScreen(): React.JSX.Element {
           title={t('home.customize')}
           chevron
           onPress={() => router.push('/(tabs)/reglages/accueil')}
+        />
+        <ListRow
+          icon="Volume2"
+          title={t('settings.sound')}
+          subtitle={t('settings.soundHint')}
+          right={<Switch value={soundEnabled} onValueChange={(v) => setSetting('soundEnabled', v)} trackColor={{ true: theme.colors.brand }} accessibilityLabel={t('settings.sound')} />}
         />
         <ListRow
           icon="Palette"

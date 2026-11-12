@@ -20,6 +20,7 @@ import {
   useScope,
 } from '@/features/budget/hooks';
 import { expenseInScope } from '@/features/budget/scope';
+import { groupSubscriptions } from '@/features/budget/subscriptions';
 import { useSettings } from '@/store/settings';
 import { useTheme } from '@/theme/ThemeProvider';
 import { Amount } from '@/ui/Amount';
@@ -115,6 +116,14 @@ export default function AnalysisScreen(): React.JSX.Element {
     [recurring, scope],
   );
   const fixedCents = fixed.reduce((a, f) => a + f.monthly, 0);
+  /** Abonnements : récurrences actives de la catégorie, sinon dépenses de la période, regroupées par nature. */
+  const subscriptions = useMemo(() => {
+    const rec = fixed.filter((f) => f.r.categoryId === 'cat_subscriptions').map((f) => ({ note: f.r.note, amountCents: f.monthly }));
+    if (rec.length > 0) return groupSubscriptions(rec);
+    const current = expenses.filter((e) => e.categoryId === 'cat_subscriptions' && e.date >= toIsoDate(rangeForMonthKey(currentKey, monthStartDay).start));
+    return groupSubscriptions(current);
+  }, [fixed, expenses, currentKey, monthStartDay]);
+  const subscriptionsCents = subscriptions.reduce((a, g) => a + g.totalCents, 0);
   const { main, rest } = splitEuros(totalCents);
   const series = totals.slice(-Math.max(6, Math.min(12, months)));
 
@@ -263,6 +272,29 @@ export default function AnalysisScreen(): React.JSX.Element {
             </PressableScale>
           );
         })
+      )}
+
+      {/* Abonnements */}
+      <SectionHeader label={t('budget.subscriptionsLabel', { amount: formatCents(subscriptionsCents) })} title={t('budget.subscriptionsTitle')} />
+      {subscriptions.length === 0 ? (
+        <Text variant="body" color="textSecondary">
+          {t('budget.noSubscriptions')}
+        </Text>
+      ) : (
+        subscriptions.map((g, i) => (
+          <View key={g.label} style={{ flexDirection: 'row', alignItems: 'center', gap: theme.spacing[3], paddingVertical: theme.spacing[3], borderBottomWidth: i === subscriptions.length - 1 ? 0 : 1, borderBottomColor: theme.colors.border }}>
+            <CategoryIcon icon="Tv" color={theme.chart[5] ?? theme.colors.brand} size={44} />
+            <View style={{ flex: 1 }}>
+              <Text variant="headline" numberOfLines={1}>
+                {g.label}
+              </Text>
+              <Text variant="callout" color="textSecondary">
+                {Math.round((g.totalCents / Math.max(1, subscriptionsCents)) * 100)} %
+              </Text>
+            </View>
+            <Amount cents={g.totalCents} variant="title2" />
+          </View>
+        ))
       )}
 
       {/* Charges récurrentes */}

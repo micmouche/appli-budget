@@ -23,6 +23,8 @@ export interface SettingsState {
   locale: AppLocale;
   demoMode: boolean;
   lockEnabled: boolean;
+  /** Tintement à la validation d'une dépense. */
+  soundEnabled: boolean;
   /** Modules choisis à l'onboarding. */
   modules: ModuleId[];
   /** Cartes affichées sur l'accueil (ordre d'affichage). */
@@ -59,6 +61,7 @@ const DEFAULTS: SettingsState = {
   locale: 'fr',
   demoMode: false,
   lockEnabled: false,
+  soundEnabled: true,
   modules: ['budget'],
   homeCards: DEFAULT_HOME_CARDS,
   couple: false,
