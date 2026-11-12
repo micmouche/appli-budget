@@ -6,6 +6,8 @@ import { View } from 'react-native';
 import Constants from 'expo-constants';
 
 import { usePremium } from '@/purchases';
+import { usePersons } from '@/features/budget/hooks';
+import { Avatar } from '@/ui/avatar/Avatar';
 import { useTheme } from '@/theme/ThemeProvider';
 import { Card } from '@/ui/Card';
 import { Icon } from '@/ui/Icon';
@@ -18,6 +20,7 @@ export default function SettingsScreen(): React.JSX.Element {
   const router = useRouter();
   const theme = useTheme();
   const { isPremium } = usePremium();
+  const persons = usePersons();
   return (
     <Screen title={t('settings.title')}>
       <Card
@@ -38,6 +41,16 @@ export default function SettingsScreen(): React.JSX.Element {
         </View>
       </Card>
       <Card padded={false} style={{ paddingHorizontal: theme.spacing[4] }}>
+        {persons.map((p) => (
+          <ListRow
+            key={p.id}
+            left={<Avatar person={p} size={40} ring />}
+            title={p.name}
+            subtitle={t('profile.edit')}
+            chevron
+            onPress={() => router.push({ pathname: '/(tabs)/reglages/profil/[id]', params: { id: p.id } })}
+          />
+        ))}
         <ListRow
           icon="Palette"
           title={t('settings.appearance')}

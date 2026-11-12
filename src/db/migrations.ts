@@ -265,6 +265,16 @@ export const migrations: Migration[] = [
       );
     `,
   },
+  {
+    version: 7,
+    description: 'Profils : avatar, photo et couleur des membres',
+    sql: `
+      ALTER TABLE persons ADD COLUMN avatar_id TEXT;
+      ALTER TABLE persons ADD COLUMN photo_uri TEXT;
+      ALTER TABLE persons ADD COLUMN color_index INTEGER NOT NULL DEFAULT 1;
+      UPDATE persons SET color_index = position + 1;
+    `,
+  },
 ];
 
 export const LATEST_SCHEMA_VERSION = migrations[migrations.length - 1]?.version ?? 0;

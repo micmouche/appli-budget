@@ -9,6 +9,7 @@ import { Amount } from '@/ui/Amount';
 import { Icon } from '@/ui/Icon';
 import { PressableScale } from '@/ui/Pressable';
 import { Text } from '@/ui/Text';
+import { Avatar } from '@/ui/avatar/Avatar';
 
 export interface ExpenseRowProps {
   expense: Expense;
@@ -32,7 +33,8 @@ export function ExpenseRow({
     ? (theme.chart[category.colorIndex % theme.chart.length] ?? theme.colors.brand)
     : theme.colors.textMuted;
   const label = category ? categoryLabel(category) : '?';
-  const payer = showPayer ? persons.find((p) => p.id === expense.paidById)?.name : undefined;
+  const payerPerson = showPayer ? persons.find((p) => p.id === expense.paidById) : undefined;
+  const payer = payerPerson?.name;
   const subtitle = [expense.note, payer, expense.recurringId ? '↻' : null].filter(Boolean).join(' · ');
   return (
     <PressableScale
@@ -65,7 +67,10 @@ export function ExpenseRow({
             </Text>
           ) : null}
         </View>
-        <Amount cents={expense.amountCents} asExpense variant="headline" />
+        <View style={{ alignItems: 'flex-end', gap: 4 }}>
+          <Amount cents={expense.amountCents} asExpense variant="headline" />
+          {payerPerson ? <Avatar person={payerPerson} size={18} /> : null}
+        </View>
       </View>
     </PressableScale>
   );

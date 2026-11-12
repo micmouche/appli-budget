@@ -20,7 +20,8 @@ import { Amount } from '@/ui/Amount';
 import { Banner } from '@/ui/Banner';
 import { Card } from '@/ui/Card';
 import { Fab } from '@/ui/Fab';
-import { IconButton } from '@/ui/IconButton';
+import { PressableScale } from '@/ui/Pressable';
+import { AvatarGroup } from '@/ui/avatar/Avatar';
 import { Screen } from '@/ui/Screen';
 import { StatTile } from '@/ui/StatTile';
 import { Text } from '@/ui/Text';
@@ -48,7 +49,10 @@ export default function HomeScreen(): React.JSX.Element {
   const lastScenario = scenarios[0];
 
   const hour = new Date().getHours();
-  const greeting = hour < 18 ? t('home.greetingMorning') : t('home.greetingEvening');
+  const first = month.persons[0];
+  const partner = month.persons[1];
+  const greeting = first ? t('profile.greeting', { name: first.name }) : hour < 18 ? t('home.greetingMorning') : t('home.greetingEvening');
+  const subtitle = `${formatMonthKey(monthKey)} · ${partner ? t('profile.sharedWith', { name: partner.name }) : t('profile.soloHousehold')}`;
   const variation =
     previous.totalCents > 0
       ? Math.round(((month.totalCents - previous.totalCents) / previous.totalCents) * 1000) / 10
@@ -199,14 +203,11 @@ export default function HomeScreen(): React.JSX.Element {
     <View style={{ flex: 1 }}>
       <Screen
         title={greeting}
-        subtitle={formatMonthKey(monthKey)}
+        subtitle={subtitle}
         headerRight={
-          <IconButton
-            name="Settings"
-            accessibilityLabel={t('tabs.settings')}
-            onPress={() => router.push('/(tabs)/reglages')}
-            filled
-          />
+          <PressableScale onPress={() => router.push('/(tabs)/reglages')} haptic="light" accessibilityRole="button" accessibilityLabel={t('profile.profiles')}>
+            <AvatarGroup persons={month.persons} size={34} />
+          </PressableScale>
         }
         bottomInset={72}
       >

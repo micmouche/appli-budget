@@ -143,7 +143,13 @@
           }
         }
       ],
-      "./plugins/withGradleMemory.js"
+      "./plugins/withGradleMemory.js",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Pécule accède à vos photos uniquement pour choisir une photo de profil, stockée sur votre téléphone."
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true

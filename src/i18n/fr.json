@@ -698,5 +698,20 @@
     "alertPaymentDue": "{{project}} : {{label}} à payer le {{date}}",
     "alertPaymentLate": "{{project}} : {{label}} en retard",
     "alertOverBudget": "{{project}} : budget dépassé de {{amount}}"
+  },
+  "profile": {
+    "title": "Mon profil",
+    "profiles": "Profils",
+    "edit": "Modifier le profil",
+    "photo": "Photo",
+    "avatar": "Avatar",
+    "removePhoto": "Retirer la photo",
+    "chooseAvatar": "Choisir un avatar",
+    "myColor": "Ma couleur",
+    "colorHint": "Votre couleur sert à vous reconnaître partout : qui a payé, le règlement du mois, les dépenses de chacun.",
+    "photoPermission": "Autorisez l'accès à vos photos dans les réglages du téléphone.",
+    "greeting": "Bonjour {{name}}",
+    "sharedWith": "foyer partagé avec {{name}}",
+    "soloHousehold": "votre foyer"
   }
 }

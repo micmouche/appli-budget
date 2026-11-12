@@ -12,7 +12,7 @@ export function listPersons(db: Db = getDb()): Person[] {
 }
 
 export function upsertPerson(
-  input: { id?: string; name: string; monthlyIncomeCents: number; position: number },
+  input: { id?: string; name: string; monthlyIncomeCents: number; position: number; avatarId?: string | null; photoUri?: string | null; colorIndex?: number },
   db: Db = getDb(),
 ): Person {
   const id = input.id ?? newId('p_');
@@ -21,13 +21,24 @@ export function upsertPerson(
     name: input.name.trim() || `Personne ${input.position + 1}`,
     monthlyIncomeCents: Math.max(0, Math.round(input.monthlyIncomeCents)),
     position: input.position,
+    avatarId: input.avatarId ?? null,
+    photoUri: input.photoUri ?? null,
+    colorIndex: input.colorIndex ?? input.position + 1,
     createdAt: new Date().toISOString(),
   };
+  const existing = db.select().from(persons).where(eq(persons.id, id)).get();
   db.insert(persons)
     .values(row)
     .onConflictDoUpdate({
       target: persons.id,
-      set: { name: row.name, monthlyIncomeCents: row.monthlyIncomeCents, position: row.position },
+      set: {
+        name: row.name,
+        monthlyIncomeCents: row.monthlyIncomeCents,
+        position: row.position,
+        avatarId: input.avatarId === undefined ? (existing?.avatarId ?? null) : input.avatarId,
+        photoUri: input.photoUri === undefined ? (existing?.photoUri ?? null) : input.photoUri,
+        colorIndex: input.colorIndex ?? existing?.colorIndex ?? row.colorIndex,
+      },
     })
     .run();
   bumpDataVersion();
@@ -53,4 +64,10 @@ export function ensureHousehold(couple: boolean, defaultNames: [string, string],
     for (const p of afterFirst.slice(1)) deletePerson(p.id, db);
   }
   return listPersons(db);
+}
+
+/** Met à jour uniquement le profil (avatar, photo, couleur, prénom). */
+export function updateProfile(id: string, patch: Partial<Pick<Person, 'name' | 'avatarId' | 'photoUri' | 'colorIndex'>>, db: Db = getDb()): void {
+  db.update(persons).set(patch).where(eq(persons.id, id)).run();
+  bumpDataVersion();
 }

@@ -17,6 +17,12 @@ export const persons = sqliteTable('persons', {
   name: text('name').notNull(),
   monthlyIncomeCents: integer('monthly_income_cents').notNull().default(0),
   position: integer('position').notNull().default(0),
+  /** Préréglage d'avatar illustré (ex. « f1 »), null = initiale. */
+  avatarId: text('avatar_id'),
+  /** Photo de profil (fichier local). */
+  photoUri: text('photo_uri'),
+  /** Couleur du membre : index dans la palette. */
+  colorIndex: integer('color_index').notNull().default(1),
   createdAt: text('created_at').notNull(),
 });
 

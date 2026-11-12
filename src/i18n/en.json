@@ -698,5 +698,20 @@
     "alertPaymentDue": "{{project}}: {{label}} due on {{date}}",
     "alertPaymentLate": "{{project}}: {{label}} overdue",
     "alertOverBudget": "{{project}}: budget exceeded by {{amount}}"
+  },
+  "profile": {
+    "title": "My profile",
+    "profiles": "Profiles",
+    "edit": "Edit profile",
+    "photo": "Photo",
+    "avatar": "Avatar",
+    "removePhoto": "Remove photo",
+    "chooseAvatar": "Choose an avatar",
+    "myColor": "My colour",
+    "colorHint": "Your colour identifies you everywhere: who paid, the monthly settlement, each person's expenses.",
+    "photoPermission": "Allow photo access in your phone settings.",
+    "greeting": "Hello {{name}}",
+    "sharedWith": "household shared with {{name}}",
+    "soloHousehold": "your household"
   }
 }

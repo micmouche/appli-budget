@@ -20,3 +20,4 @@ export * from './Disclaimer';
 export * from './MonthSwitcher';
 export * from './StatTile';
 export * from './TabChips';
+export * from './avatar';
