@@ -7,8 +7,7 @@ import type { Person } from '@/db/schema';
 import { useTheme } from '@/theme/ThemeProvider';
 
 import { Text } from '../Text';
-import { AvatarFace } from './AvatarFace';
-import { AVATAR_PRESETS, avatarPreset } from './presets';
+import { avatarPreset } from './presets';
 
 export interface AvatarProps {
   person: Pick<Person, 'name' | 'avatarId' | 'photoUri' | 'colorIndex'> | null | undefined;
@@ -28,8 +27,8 @@ export function Avatar({ person, size = 32, ring = false }: AvatarProps): React.
   let content: React.ReactNode;
   if (person?.photoUri) {
     content = <Image source={{ uri: person.photoUri }} style={{ width: inner, height: inner, borderRadius: inner / 2 }} contentFit="cover" accessibilityLabel={person.name} />;
-  } else if (person?.avatarId && AVATAR_PRESETS.some((p) => p.id === person.avatarId)) {
-    content = <AvatarFace spec={avatarPreset(person.avatarId)} size={inner} />;
+  } else if (avatarPreset(person?.avatarId)) {
+    content = <Image source={avatarPreset(person?.avatarId)!.source} style={{ width: inner, height: inner, borderRadius: inner / 2 }} contentFit="cover" accessibilityLabel={person?.name} />;
   } else {
     content = (
       <View style={{ width: inner, height: inner, borderRadius: inner / 2, backgroundColor: color, alignItems: 'center', justifyContent: 'center' }}>

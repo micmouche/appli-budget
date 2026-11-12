@@ -115,8 +115,8 @@ const PATTERNS: Pattern[] = [
 export function seedDemo(db: Db = getDemoDb()): void {
   clearDataTables(db);
   ensureDefaultCategories(db);
-  const camille = upsertPerson({ name: 'Camille', monthlyIncomeCents: 2_100_00, position: 0, avatarId: 'f1', colorIndex: 1 }, db);
-  const hugo = upsertPerson({ name: 'Hugo', monthlyIncomeCents: 2_900_00, position: 1, avatarId: 'm2', colorIndex: 6 }, db);
+  const camille = upsertPerson({ name: 'Camille', monthlyIncomeCents: 2_100_00, position: 0, avatarId: 'avatar_female_01', colorIndex: 1 }, db);
+  const hugo = upsertPerson({ name: 'Hugo', monthlyIncomeCents: 2_900_00, position: 1, avatarId: 'avatar_male_02', colorIndex: 6 }, db);
   const people = [camille.id, hugo.id];
   const random = rng(20261110);
   const pick = <T>(arr: readonly T[]): T => arr[Math.floor(random() * arr.length)]!;

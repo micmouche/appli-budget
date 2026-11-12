@@ -96,7 +96,18 @@
     "goalsCaption": "{{done}} / {{total}} atteint(s)",
     "scenarioCaption": "{{name}} · {{ratio}} d'endettement",
     "rentsCaption": "{{paid}} / {{total}} encaissés · {{amount}}",
-    "worksCaption": "{{paid}} payé sur {{committed}} engagé"
+    "worksCaption": "{{paid}} payé sur {{committed}} engagé",
+    "customize": "Personnaliser l'accueil",
+    "addCard": "Ajouter une carte",
+    "removeCard": "Retirer de l'accueil",
+    "cardsHint": "Choisissez les cartes affichées sous le solde du mois. Les modules restent accessibles dans les onglets.",
+    "cards": {
+      "topCategory": "Première catégorie du mois",
+      "savings": "Épargne totale et objectifs",
+      "property": "Dernier scénario immobilier",
+      "rental": "Loyers du mois",
+      "works": "Chantier en cours"
+    }
   },
   "alerts": {
     "envelopeWarning": "{{category}} : {{pct}} % de l'enveloppe utilisés",

@@ -10,6 +10,9 @@ import type { SplitMode } from '@/finance/budget';
 import type { ModuleId } from '@/theme/tokens';
 
 export type ThemePreference = 'system' | 'light' | 'dark';
+export type HomeCardId = 'topCategory' | 'savings' | 'property' | 'rental' | 'works';
+export const ALL_HOME_CARDS: HomeCardId[] = ['savings', 'topCategory', 'rental', 'works', 'property'];
+export const DEFAULT_HOME_CARDS: HomeCardId[] = ['savings', 'topCategory'];
 
 export interface SettingsState {
   hydrated: boolean;
@@ -18,8 +21,10 @@ export interface SettingsState {
   locale: AppLocale;
   demoMode: boolean;
   lockEnabled: boolean;
-  /** Modules choisis à l'onboarding (ordre des tuiles de l'accueil). */
+  /** Modules choisis à l'onboarding. */
   modules: ModuleId[];
+  /** Cartes affichées sur l'accueil (ordre d'affichage). */
+  homeCards: HomeCardId[];
   couple: boolean;
   splitMode: SplitMode;
   customPctPerson1: number;
@@ -51,6 +56,7 @@ const DEFAULTS: SettingsState = {
   demoMode: false,
   lockEnabled: false,
   modules: ['budget'],
+  homeCards: DEFAULT_HOME_CARDS,
   couple: false,
   splitMode: 'prorata',
   customPctPerson1: 50,

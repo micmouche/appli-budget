@@ -15,11 +15,12 @@ import { useWorks } from '@/features/works/hooks';
 import { usePremium } from '@/purchases';
 import { useSettings } from '@/store/settings';
 import { useTheme } from '@/theme/ThemeProvider';
-import type { ModuleId } from '@/theme/tokens';
+import type { HomeCardId } from '@/store/settings';
 import { Amount } from '@/ui/Amount';
 import { Banner } from '@/ui/Banner';
 import { Card } from '@/ui/Card';
 import { Fab } from '@/ui/Fab';
+import { Icon } from '@/ui/Icon';
 import { PressableScale } from '@/ui/Pressable';
 import { AvatarGroup } from '@/ui/avatar/Avatar';
 import { Screen } from '@/ui/Screen';
@@ -37,7 +38,7 @@ export default function HomeScreen(): React.JSX.Element {
   const month = useBudgetMonth(monthKey);
   const previous = useBudgetMonth(shiftMonthKey(monthKey, -1));
   const totals = useMonthlyTotals(monthKey, 6);
-  const modules = useSettings((s) => s.modules);
+  const homeCards = useSettings((s) => s.homeCards);
   const demoMode = useSettings((s) => s.demoMode);
   const lastExportAt = useSettings((s) => s.lastExportAt);
   const { isPremium } = usePremium();
@@ -191,12 +192,6 @@ export default function HomeScreen(): React.JSX.Element {
   }, [month, savings, rentals, works, router, t]);
 
   const exportDays = lastExportAt ? differenceInDays(new Date(), new Date(lastExportAt)) : null;
-  const orderedModules: ModuleId[] = [
-    ...modules,
-    ...(['budget', 'savings', 'property', 'rental', 'works'] as ModuleId[]).filter(
-      (m) => !modules.includes(m),
-    ),
-  ];
   const topCategory = month.categoryTotals[0];
 
   return (
@@ -274,11 +269,11 @@ export default function HomeScreen(): React.JSX.Element {
 
         {/* Tuiles par module */}
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: theme.spacing[3] }}>
-          {orderedModules.map((m) => {
-            if (m === 'budget') {
+          {homeCards.map((m) => {
+            if (m === 'topCategory') {
               return (
                 <StatTile
-                  key={m}
+                  key="topCategory"
                   label={t('budget.topCategory')}
                   icon="Wallet"
                   accent={theme.module.budget}
@@ -294,7 +289,7 @@ export default function HomeScreen(): React.JSX.Element {
               );
             }
             const meta: Record<
-              Exclude<ModuleId, 'budget'>,
+              Exclude<HomeCardId, 'topCategory'>,
               { label: string; icon: string; value: string; caption: string; href: string }
             > = {
               savings: {
@@ -385,6 +380,14 @@ export default function HomeScreen(): React.JSX.Element {
               />
             );
           })}
+          <Card onPress={() => router.push('/(tabs)/reglages/accueil')} tone="surface2" style={{ minWidth: '47%', flex: 1, minHeight: 120, borderStyle: 'dashed', borderColor: theme.colors.border, borderWidth: 1 }} accessibilityLabel={t('home.addCard')}>
+            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+              <Icon name="Plus" color="textSecondary" size={22} />
+              <Text variant="caption" color="textSecondary">
+                {t('home.addCard')}
+              </Text>
+            </View>
+          </Card>
         </View>
 
         {/* Rappel d'export */}

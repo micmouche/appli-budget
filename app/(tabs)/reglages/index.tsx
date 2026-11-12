@@ -51,6 +51,7 @@ export default function SettingsScreen(): React.JSX.Element {
             onPress={() => router.push({ pathname: '/(tabs)/reglages/profil/[id]', params: { id: p.id } })}
           />
         ))}
+        <ListRow icon="LayoutGrid" title={t('home.customize')} chevron onPress={() => router.push('/(tabs)/reglages/accueil')} />
         <ListRow
           icon="Palette"
           title={t('settings.appearance')}

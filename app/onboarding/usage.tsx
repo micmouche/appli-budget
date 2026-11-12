@@ -44,6 +44,7 @@ export default function OnboardingUsage(): React.JSX.Element {
           disabled={selected.length === 0}
           onPress={() => {
             set('modules', selected);
+            set('homeCards', ['savings', 'topCategory', ...(['rental', 'works', 'property'] as const).filter((m) => selected.includes(m))]);
             router.push('/onboarding/demarrage');
           }}
         />

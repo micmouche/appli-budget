@@ -96,7 +96,18 @@
     "goalsCaption": "{{done}} / {{total}} reached",
     "scenarioCaption": "{{name}} · {{ratio}} debt ratio",
     "rentsCaption": "{{paid}} / {{total}} collected · {{amount}}",
-    "worksCaption": "{{paid}} paid of {{committed}} committed"
+    "worksCaption": "{{paid}} paid of {{committed}} committed",
+    "customize": "Customise home",
+    "addCard": "Add a card",
+    "removeCard": "Remove from home",
+    "cardsHint": "Choose the cards shown under the month balance. Modules stay available in the tabs.",
+    "cards": {
+      "topCategory": "Top category of the month",
+      "savings": "Total savings and goals",
+      "property": "Latest property scenario",
+      "rental": "This month's rents",
+      "works": "Ongoing works"
+    }
   },
   "alerts": {
     "envelopeWarning": "{{category}}: {{pct}}% of envelope used",

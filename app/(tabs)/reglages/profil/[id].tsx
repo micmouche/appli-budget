@@ -5,13 +5,13 @@ import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { File, Paths } from 'expo-file-system';
+import { Image } from 'expo-image';
 
 import { SubScreenHeader } from '@/core/SubScreenHeader';
 import { updateProfile } from '@/db/repositories';
 import { usePersons } from '@/features/budget/hooks';
 import { useTheme } from '@/theme/ThemeProvider';
 import { Avatar } from '@/ui/avatar/Avatar';
-import { AvatarFace } from '@/ui/avatar/AvatarFace';
 import { AVATAR_PRESETS } from '@/ui/avatar/presets';
 import { Button } from '@/ui/Button';
 import { Card } from '@/ui/Card';
@@ -102,7 +102,7 @@ export default function ProfileScreen(): React.JSX.Element {
                 accessibilityState={{ selected: on }}
                 style={{ borderRadius: 40, borderWidth: 3, borderColor: on ? theme.colors.brand : 'transparent', padding: 2 }}
               >
-                <AvatarFace spec={p} size={62} />
+                <Image source={p.source} style={{ width: 62, height: 62, borderRadius: 31 }} contentFit="cover" />
               </PressableScale>
             );
           })}

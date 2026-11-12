@@ -1,39 +1,35 @@
-/** Avatars illustrés : paramètres partagés avec la maquette (scratch gen.js). */
-export const AVATAR_SKINS = { light: '#F6D7C3', medium: '#E0A98A', tan: '#C98A62', brown: '#9C6644', deep: '#6B4226' } as const;
-export const AVATAR_HAIR = { black: '#2B2320', brown: '#6B4A32', blond: '#E2B45A', red: '#C7542B', grey: '#B8B2A7', pink: '#E58AB4' } as const;
-export const AVATAR_BG = ['#FFD9C2', '#DCD6FA', '#CDEBDD', '#FBE6B5', '#F9D6E1', '#D7E6FB', '#E6E1D6', '#C9EDE8'] as const;
+/** Avatars illustrés fournis par l'éditeur (20 personnages, WebP 512 px). */
+import type { ImageSource } from 'expo-image';
 
-export type AvatarSkin = keyof typeof AVATAR_SKINS;
-export type AvatarHair = keyof typeof AVATAR_HAIR;
-export type AvatarHairStyle = 'short' | 'curly' | 'long' | 'wavy' | 'bun' | 'side' | 'bald' | 'buzz';
-export type AvatarAccessory = 'none' | 'glasses' | 'roundGlasses' | 'beard' | 'earrings' | 'cap' | 'headband' | 'moustache';
-export type AvatarSmile = 'wide' | 'open' | 'soft';
-
-export interface AvatarSpec {
+export interface AvatarPreset {
   id: string;
-  skin: AvatarSkin;
-  hair: AvatarHair;
-  hairStyle: AvatarHairStyle;
-  bg: string;
-  accessory: AvatarAccessory;
-  smile: AvatarSmile;
+  gender: 'female' | 'male';
+  source: ImageSource | number;
 }
 
-export const AVATAR_PRESETS: AvatarSpec[] = [
-  { id: 'f1', skin: 'light', hair: 'brown', hairStyle: 'long', bg: AVATAR_BG[0], accessory: 'earrings', smile: 'wide' },
-  { id: 'f2', skin: 'medium', hair: 'black', hairStyle: 'bun', bg: AVATAR_BG[1], accessory: 'roundGlasses', smile: 'soft' },
-  { id: 'f3', skin: 'tan', hair: 'red', hairStyle: 'wavy', bg: AVATAR_BG[2], accessory: 'none', smile: 'open' },
-  { id: 'f4', skin: 'deep', hair: 'black', hairStyle: 'curly', bg: AVATAR_BG[3], accessory: 'earrings', smile: 'wide' },
-  { id: 'f5', skin: 'light', hair: 'blond', hairStyle: 'side', bg: AVATAR_BG[4], accessory: 'headband', smile: 'soft' },
-  { id: 'f6', skin: 'brown', hair: 'pink', hairStyle: 'short', bg: AVATAR_BG[5], accessory: 'glasses', smile: 'open' },
-  { id: 'm1', skin: 'light', hair: 'brown', hairStyle: 'short', bg: AVATAR_BG[5], accessory: 'none', smile: 'wide' },
-  { id: 'm2', skin: 'medium', hair: 'black', hairStyle: 'buzz', bg: AVATAR_BG[2], accessory: 'beard', smile: 'soft' },
-  { id: 'm3', skin: 'tan', hair: 'blond', hairStyle: 'side', bg: AVATAR_BG[6], accessory: 'glasses', smile: 'open' },
-  { id: 'm4', skin: 'deep', hair: 'black', hairStyle: 'curly', bg: AVATAR_BG[0], accessory: 'none', smile: 'wide' },
-  { id: 'm5', skin: 'brown', hair: 'grey', hairStyle: 'bald', bg: AVATAR_BG[7], accessory: 'moustache', smile: 'soft' },
-  { id: 'm6', skin: 'light', hair: 'red', hairStyle: 'short', bg: AVATAR_BG[3], accessory: 'cap', smile: 'open' },
+export const AVATAR_PRESETS: AvatarPreset[] = [
+  { id: 'avatar_female_01', gender: 'female', source: require('../../../assets/avatars/avatar_female_01.webp') },
+  { id: 'avatar_female_02', gender: 'female', source: require('../../../assets/avatars/avatar_female_02.webp') },
+  { id: 'avatar_female_03', gender: 'female', source: require('../../../assets/avatars/avatar_female_03.webp') },
+  { id: 'avatar_female_04', gender: 'female', source: require('../../../assets/avatars/avatar_female_04.webp') },
+  { id: 'avatar_female_05', gender: 'female', source: require('../../../assets/avatars/avatar_female_05.webp') },
+  { id: 'avatar_female_06', gender: 'female', source: require('../../../assets/avatars/avatar_female_06.webp') },
+  { id: 'avatar_female_07', gender: 'female', source: require('../../../assets/avatars/avatar_female_07.webp') },
+  { id: 'avatar_female_08', gender: 'female', source: require('../../../assets/avatars/avatar_female_08.webp') },
+  { id: 'avatar_female_09', gender: 'female', source: require('../../../assets/avatars/avatar_female_09.webp') },
+  { id: 'avatar_female_10', gender: 'female', source: require('../../../assets/avatars/avatar_female_10.webp') },
+  { id: 'avatar_male_01', gender: 'male', source: require('../../../assets/avatars/avatar_male_01.webp') },
+  { id: 'avatar_male_02', gender: 'male', source: require('../../../assets/avatars/avatar_male_02.webp') },
+  { id: 'avatar_male_03', gender: 'male', source: require('../../../assets/avatars/avatar_male_03.webp') },
+  { id: 'avatar_male_04', gender: 'male', source: require('../../../assets/avatars/avatar_male_04.webp') },
+  { id: 'avatar_male_05', gender: 'male', source: require('../../../assets/avatars/avatar_male_05.webp') },
+  { id: 'avatar_male_06', gender: 'male', source: require('../../../assets/avatars/avatar_male_06.webp') },
+  { id: 'avatar_male_07', gender: 'male', source: require('../../../assets/avatars/avatar_male_07.webp') },
+  { id: 'avatar_male_08', gender: 'male', source: require('../../../assets/avatars/avatar_male_08.webp') },
+  { id: 'avatar_male_09', gender: 'male', source: require('../../../assets/avatars/avatar_male_09.webp') },
+  { id: 'avatar_male_10', gender: 'male', source: require('../../../assets/avatars/avatar_male_10.webp') },
 ];
 
-export function avatarPreset(id: string | null | undefined): AvatarSpec {
-  return AVATAR_PRESETS.find((p) => p.id === id) ?? AVATAR_PRESETS[0]!;
+export function avatarPreset(id: string | null | undefined): AvatarPreset | undefined {
+  return AVATAR_PRESETS.find((p) => p.id === id);
 }
