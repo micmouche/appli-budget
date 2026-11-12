@@ -280,7 +280,8 @@
       "noOperations": "No transaction",
       "deleteWithOps": "This account holds {{count}} transaction(s). They will move to “{{target}}”.",
       "owner": "Owner",
-      "ownerShared": "Shared"
+      "ownerShared": "Shared",
+      "balances": "Balances"
     },
     "kinds": {
       "expense": "Expense",
@@ -320,7 +321,17 @@
       "sharedOnly": "Shared finances",
       "personalOf": "{{name}}'s finances",
       "everything": "Whole household"
-    }
+    },
+    "previousMonth": "Previous month",
+    "nextMonth": "Next month",
+    "breakdown": "Breakdown",
+    "exceeded": "Exceeded",
+    "envelopeDetail": "Monthly envelope",
+    "availableOutOfEnvelope": "available out of {{total}}",
+    "noEnvelope": "No envelope set for this category",
+    "sort": "Sort",
+    "sortDate": "By date",
+    "sortAmount": "By amount"
   },
   "categories": {
     "housing": "Housing",

@@ -280,7 +280,8 @@
       "noOperations": "Aucune opération",
       "deleteWithOps": "Ce compte contient {{count}} opération(s). Elles seront déplacées vers « {{target}} ».",
       "owner": "Titulaire",
-      "ownerShared": "Commun"
+      "ownerShared": "Commun",
+      "balances": "Soldes"
     },
     "kinds": {
       "expense": "Dépense",
@@ -320,7 +321,17 @@
       "sharedOnly": "Finances communes",
       "personalOf": "Finances de {{name}}",
       "everything": "Tout le foyer"
-    }
+    },
+    "previousMonth": "Mois précédent",
+    "nextMonth": "Mois suivant",
+    "breakdown": "Répartition",
+    "exceeded": "Dépassée",
+    "envelopeDetail": "Enveloppe mensuelle",
+    "availableOutOfEnvelope": "disponibles sur {{total}}",
+    "noEnvelope": "Pas d'enveloppe définie pour cette catégorie",
+    "sort": "Trier",
+    "sortDate": "Par date",
+    "sortAmount": "Par montant"
   },
   "categories": {
     "housing": "Logement",
