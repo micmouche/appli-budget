@@ -15,6 +15,7 @@ import {
 import i18n, { detectLocale, initI18n } from '@/i18n';
 import { configurePurchases } from '@/purchases';
 import { getSettings, hydrateSettings } from '@/store/settings';
+import { preloadSounds } from '@/utils/sound';
 
 let booted = false;
 
@@ -41,6 +42,7 @@ export async function bootstrap(): Promise<void> {
   generateDueRecurring();
   generateRentSchedule();
   // 5. Achats (asynchrone, non bloquant)
+  preloadSounds();
   void configurePurchases();
 }
 
